@@ -15,7 +15,7 @@ We're going to learn:
 ---
 
 ## You've been hired!
-![fab llama](assets/fab_llama.gif "Hey bb")
+![fab llama](assets/fab_llama.gif)
 
 Note: You've been hired by *The Llama Shaving Co*
 - Your boss has told you to create a Llama shaving simulator. You were once a lowly Java programmer, but he wants you to do it in *Scala!*. He wants it to be functional. Let's give it a shot.
