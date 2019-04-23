@@ -232,7 +232,12 @@ class Llama {
 
 Update constructor and values in Scala:
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String)
+class Llama(fluffyness: Int, strength: Int, name: String){
+
+def shave(woolAmt: Int): Llama =
+    new Llama(fluffyness - woolAmt)
+
+}
 ```
 
 ---
@@ -259,6 +264,8 @@ class Llama extends Clonable {
 
 ---
 
+> Define copying and equality
+
 Implement `clone()` method:
 
 ```java
@@ -283,6 +290,8 @@ class Llama extends Clonable {
 ```
 
 ---
+
+> Define copying and equality
 
 Then we would have to define `equals()` as well..
 
@@ -331,7 +340,19 @@ Note: What a load of...work!
 
 ---
 
-Now we can:
+Define copying and equality in Scala:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def shave(woolAmt: Int): Llama =
+      new Llama(fluffyness - woolAmt)
+
+}
+```
+
+---
+
+Copy and print equality in Java:
 ```java
 Llama llama = new Llama(1,1,"Dalai");
 Llama llamaCopy = llama.clone();
@@ -341,22 +362,7 @@ System.out.println(llama.equals(llamaCopy));
 
 ---
 
-Now in scala...
-
----
-
-
-
----
-
-Now put the word case in front of class:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
-```
-
----
-
-Now we can:
+Copy and print equality in Scala:
 ```scala
 val llama = Llama(1,1,"Dalai")
 val llamaCopy = llama.copy()
@@ -370,6 +376,16 @@ Note: More or less the same as Java, but a lil shorter.
 ---
 
 Cool. What is a case class?
+
+---
+
+It' just a package for data.
+> Those of you familar with C may think of it as a struct
+> You could think of it as JSON
+
+---
+
+
 
 Note: It's a struct. It's just a package for data.
 - It comes with a plethora of cool things that makes sense for data. Equality checking and easy copying are two good examples, but there's many more! Lot's of syntactic sugar. Some other examples:
