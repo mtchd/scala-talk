@@ -110,7 +110,7 @@ class Llama(fluffyness: Int) {
   
 }
 ```
-> Unit is the same as void in Java.
+> `Unit` is analogous to `void` in Java
 
 <aside class="notes"><p>Now, let&#39;s add some logic to that method. Otherwise it doesn&#39;t do anything!
 As the clueless OO programmer you are, you might write something verbose like this:</p>
@@ -121,7 +121,9 @@ That's because fluffyness is now immutable!
 </script></section><section  data-markdown><script type="text/template">
 Scala does this to ~~make your life hard~~ keep things functional.
  > All variables are immutable in FP
-</script></section><section  data-markdown><script type="text/template">
+
+<aside class="notes"><p>Ask me this question at the end if we get time!</p>
+</aside></script></section><section  data-markdown><script type="text/template">
 Let's do that the long way:
 ```scala
 
@@ -170,7 +172,7 @@ We have succeeded in our hostile takeover of *Llama Transport Co* in the Andes.
 <li>We are also more humane for better PR, and have given our llamas names.</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Your boss has asked you to...
+You've been asked you to...
 </script></section><section  data-markdown><script type="text/template">
 Add more fields:
 - Update the `llama` class with `strength` and `name`
@@ -200,7 +202,12 @@ class Llama {
 </script></section><section  data-markdown><script type="text/template">
 Update constructor and values in Scala:
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String)
+class Llama(fluffyness: Int, strength: Int, name: String){
+
+  def shave(woolAmt: Int): Llama =
+      new Llama(fluffyness - woolAmt)
+
+}
 ```
 </script></section><section  data-markdown><script type="text/template">
 > Define copying and equality
@@ -223,6 +230,8 @@ class Llama extends Clonable {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
+> Define copying and equality
+
 Implement `clone()` method:
 
 ```java
@@ -246,6 +255,8 @@ class Llama extends Clonable {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
+> Define copying and equality
+
 Then we would have to define `equals()` as well..
 
 ```java
@@ -291,7 +302,17 @@ class Llama extends Clonable {
 
 <aside class="notes"><p>What a load of...work!</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-Now we can:
+Define copying and equality in Scala:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def shave(woolAmt: Int): Llama =
+      new Llama(fluffyness - woolAmt)
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Copy and print equality in Java:
 ```java
 Llama llama = new Llama(1,1,"Dalai");
 Llama llamaCopy = llama.clone();
@@ -299,16 +320,7 @@ Llama llamaCopy = llama.clone();
 System.out.println(llama.equals(llamaCopy));
 ```
 </script></section><section  data-markdown><script type="text/template">
-Now in scala...
-</script></section><section  data-markdown><script type="text/template">
-
-</script></section><section  data-markdown><script type="text/template">
-Now put the word case in front of class:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
-```
-</script></section><section  data-markdown><script type="text/template">
-Now we can:
+Copy and print equality in Scala:
 ```scala
 val llama = Llama(1,1,"Dalai")
 val llamaCopy = llama.copy()
@@ -322,23 +334,40 @@ println(llama == llamaCopy)
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
 Cool. What is a case class?
+</script></section><section  data-markdown><script type="text/template">
+It's just a package for data.
+- You could think of it as:
+  - A struct
+  - JSON
+</script></section><section  data-markdown><script type="text/template">
+Some examples of what case class does:
+  + Syntactic sugar
+  + Equality
+  + Copying
+  + HashCode
+  + toString
+  + Serialisable
+  + Easy pattern matching
+  + Implementing Algebraic Data Types
+  </script></section><section  data-markdown><script type="text/template">
+> Drawback of Case Class
 
-<aside class="notes"><p>It&#39;s a struct. It&#39;s just a package for data.</p>
-<ul>
-<li>It comes with a plethora of cool things that makes sense for data. Equality checking and easy copying are two good examples, but there&#39;s many more! Lot&#39;s of syntactic sugar. Some other examples:<ul>
-<li>Implements hashCode</li>
-<li>toString</li>
-<li>Serialisable</li>
-<li>Easy pattern matching</li>
-<li>Implementing Algebraic Data Types</li>
-</ul>
-</li>
-<li>In fact, when using case classes, you compiled byte code for that class is often a little larger. One of the drawbacks of case class is it implements a <em>lot</em> of stuff, which we may not use.</li>
-<li>We generally don&#39;t store methods in here, in attempt to keep thing more functional.</li>
-<li>This brings up a problem. What about the shave method?</li>
-<li>We could leave it in there. And that&#39;s okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
+Your compiled code is a little larger due to implementing all this.
+</script></section><section  data-markdown><script type="text/template">
+We generally don't store methods in here, in an attempt to keep thing more functional.
+</script></section><section  data-markdown><script type="text/template">
+Wait...why?
+</script></section><section  data-markdown><script type="text/template">
+Object orientated is a collection of objects: Each one a combination of data and functions.
+</script></section><section  data-markdown><script type="text/template">
+Functional programs are just a collection of functions which take data, manipulate it, and return it. Data is to be stored separately.
+
+> This goes to the heart of functional programming
+</script></section><section  data-markdown><script type="text/template">
+This brings up a problem. What about the shave method?
+</script></section><section  data-markdown><script type="text/template">
+We could leave it in there. And that's okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.
+</script></section><section  data-markdown><script type="text/template">
 ## Singleton Objects
 
 <aside class="notes"><p>We can now put this function in a singleton object</p>
