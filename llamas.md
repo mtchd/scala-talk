@@ -119,7 +119,7 @@ class Llama(fluffyness: Int) {
   
 }
 ```
-> Unit is the same as void in Java.
+> `Unit` is analogous to `void` in Java
 
 Note: 
 Now, let's add some logic to that method. Otherwise it doesn't do anything!
@@ -137,6 +137,8 @@ That's because fluffyness is now immutable!
 
 Scala does this to ~~make your life hard~~ keep things functional.
  > All variables are immutable in FP
+
+Note: Ask me this question at the end if we get time!
 
 ---
 
@@ -234,8 +236,8 @@ Update constructor and values in Scala:
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String){
 
-def shave(woolAmt: Int): Llama =
-    new Llama(fluffyness - woolAmt)
+  def shave(woolAmt: Int): Llama =
+      new Llama(fluffyness - woolAmt)
 
 }
 ```
@@ -379,25 +381,54 @@ Cool. What is a case class?
 
 ---
 
-It' just a package for data.
-> Those of you familar with C may think of it as a struct
-> You could think of it as JSON
+It's just a package for data.
+- You could think of it as:
+  - A struct
+  - JSON
 
 ---
 
-
-
-Note: It's a struct. It's just a package for data.
-- It comes with a plethora of cool things that makes sense for data. Equality checking and easy copying are two good examples, but there's many more! Lot's of syntactic sugar. Some other examples:
-  + Implements hashCode
+Some examples of what case class does:
+  + Syntactic sugar
+  + Equality
+  + Copying
+  + HashCode
   + toString
   + Serialisable
   + Easy pattern matching
   + Implementing Algebraic Data Types
-- In fact, when using case classes, you compiled byte code for that class is often a little larger. One of the drawbacks of case class is it implements a *lot* of stuff, which we may not use.
-- We generally don't store methods in here, in attempt to keep thing more functional.
-- This brings up a problem. What about the shave method?
-- We could leave it in there. And that's okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.
+  
+---
+
+> Drawback of Case Class
+
+Your compiled code is a little larger due to implementing all this.
+
+---
+
+We generally don't store methods in here, in an attempt to keep thing more functional.
+
+---
+
+Wait...why?
+
+---
+
+Object orientated is a collection of objects: Each one a combination of data and functions.
+
+---
+
+Functional programs are just a collection of functions which take data, manipulate it, and return it. Data is to be stored separately.
+
+> This goes to the heart of functional programming
+
+---
+
+This brings up a problem. What about the shave method?
+
+---
+
+We could leave it in there. And that's okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.
 
 ---
 
