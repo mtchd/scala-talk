@@ -226,6 +226,10 @@ class Llama {
     this.strength = strength;
     this.name = name;
   }
+
+  public void shave(int woolAmt) {
+    fluffyness = fluffyness - woolAmt;
+  }
   
 }
 ```
@@ -234,7 +238,7 @@ class Llama {
 
 Update constructor and values in Scala:
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String){
+class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def shave(woolAmt: Int): Llama =
       new Llama(fluffyness - woolAmt)
@@ -244,7 +248,7 @@ class Llama(fluffyness: Int, strength: Int, name: String){
 
 ---
 
-> Define copying and equality
+> Define copying and equality in Java
 
 Extend the `clonable` interface:
 
@@ -266,7 +270,7 @@ class Llama extends Clonable {
 
 ---
 
-> Define copying and equality
+> Define copying and equality in Java
 
 Implement `clone()` method:
 
@@ -293,7 +297,7 @@ class Llama extends Clonable {
 
 ---
 
-> Define copying and equality
+> Define copying and equality in Java
 
 Then we would have to define `equals()` as well..
 
@@ -395,8 +399,8 @@ Some examples of what case class does:
   + HashCode
   + toString
   + Serialisable
-  + Easy pattern matching
-  + Implementing Algebraic Data Types
+  + Pattern matching
+  + Algebraic Data Types
   
 ---
 
@@ -424,76 +428,31 @@ Functional programs are just a collection of functions which take data, manipula
 
 ---
 
-This brings up a problem. What about the shave method?
-
----
-
-We could leave it in there. And that's okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.
+This brings up a problem. What about the shave method? 
 
 ---
 
 ## Singleton Objects
 
-Note: We can now put this function in a singleton object
-- This is a little like `static` in Java
-- Whiteboard this up: It's just a single instance of a class.
-- There is only 1. Zero is too few. 2 is far too many. 1 exists forever and always (not actually true, it's lazy loaded, but that's for another time)
-
----
-
-```scala
-object LlamaShaver
-```
-
----
-
-```scala
-object LlamaShaver {
-  
-  def shave(llama: Llama, woolAmt: Int): Llama = Llama(llama.fluffyness - woolAmt, llama.strength, llama.name)
-  
-}
-```
-
-Note: That's a bit verbose. We can do better. Fortunately that's easy in Scala, thanks to case classes.
-
----
-
-```scala
-object LlamaShaver {
-
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
-
-}
-```
-Note: Kind of a bit of work isn't it? And now this Llama shaver object is kind of sitting out in space, not really connected to the class it's supposed to work on
-- Never fear Scala is here!
-
----
-
-## Companion Objects
-
 Note: Like singleton objects, but attached to a class of some kind.
 - Just change the name of the object to be the same as the class.
+- Whiteboard this up
 
 ---
 
-Give it the same name as it's class:
+Declare an object:
 ```scala
-object Llama {
+case class Llama(fluffyness: Int, strength: Int, name: String)
 
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
-
-}
+object Llama 
 ```
 
 Note: Now we can put it in the same file as our class and they hang out together.
+- It has the same name as it's companion class
 
 ---
 
-Put them together in the same file:
+Add the shave method:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String)
 
@@ -510,6 +469,83 @@ Note: So now we have two nice and separate parts of the file - data and methods.
 
 ---
 
+Why do that? Why not just have it in the class?
+
+---
+
+`shave` now takes a llama as well. It is stateless.
+
+It behaves in a static manner instead of like a method in OO.
+
+Note: So what is that exactly?
+
+---
+
+It has clearly defined immutable inputs and outputs in it's first line.
+
+```scala
+def shave(llama: Llama, woolAmt: Int): Llama = //...
+```
+
+Note: So how does that benefit us?
+
+---
+
+In complex programs, this makes things easier to understand. All you need to know is the inputs and outputs.
+
+> There are no external "global" variables it relies on.
+
+Note: Global variables are kind of a good example here. 
+If your function uses a global variables from *outside* the function then that's easy to miss.
+Class variables can be a little like those global variables. They're *not* constant, even though they are immutable.
+That's because there are many instances of that class.
+
+---
+
+This makes testing and Test Driven Development easier as well.
+
+---
+
+Let's recap.
+
+---
+
+We implemented copy and equality in Java and Scala
+> Scala saved on boilerplate with case class.
+
+---
+
+We implemented case class and companion objects in Scala
+> This made our code more functional, which brings a variety of benefits.
+  
+---
+
+A few things to remember before we continue.
+
+---
+
+There are benefits to both FP and OO/Imperative styles.
+
+> Scala is flexible in that it allows both OO and FP.
+
+This being good or bad is a matter of opinion.
+
+Note: I personally believe it's good, my ideal program is a functional core, with a thin imperative shell to run it.
+- Scala is still more object orientated than Haskell for example.
+- It can be argued that it's more object orientated than Java as well.
+
+---
+
+Objects in scala don't have to be companion objects.
+> Singleton objects don't need no class.
+
+---
+
+Questions before we move on?
+
+> How are we doing for time?
+
+---
 ## Monetising the Llamas further
 We have taken on a contract from a french fashion company to advertise hats.
 
@@ -531,7 +567,7 @@ Each hat requires a trick when a traveller sees them:
 
 ---
 
-Ideal code:
+What your end result should like:
 ```
 > println(llama.trick)
 "Talk"
@@ -539,13 +575,42 @@ Ideal code:
 
 ---
 
-We need a function that returns to a llama what trick it should do.
+Let's think about this...
 
 Note: Let's use ADT
-- Let's think about this..
+- Let's think about this...
 - The funciton needs to map each hat to a trick
 - A hat can come in four different flavours, but each llama *always* has a hat.
 - All llamas need to do tricks with their hat
+
+---
+
+All llamas have hats, but a hat can come in four different flavours.
+
+---
+
+There are a few different ways of doing this.
+
+---
+
+Each Llama could store a string that describes the hat:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String, Hat: String)
+```
+
+---
+
+Why is that bad?
+
+---
+
+We could recieve any input, then...
+
+> We would have a runtime error instead of a compile time error.
+
+---
+
+How do we get a compile time error? Enumorator maybe?
 
 ---
 

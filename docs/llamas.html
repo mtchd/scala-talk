@@ -196,13 +196,17 @@ class Llama {
     this.strength = strength;
     this.name = name;
   }
+
+  public void shave(int woolAmt) {
+    fluffyness = fluffyness - woolAmt;
+  }
   
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
 Update constructor and values in Scala:
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String){
+class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def shave(woolAmt: Int): Llama =
       new Llama(fluffyness - woolAmt)
@@ -210,7 +214,7 @@ class Llama(fluffyness: Int, strength: Int, name: String){
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-> Define copying and equality
+> Define copying and equality in Java
 
 Extend the `clonable` interface:
 
@@ -230,7 +234,7 @@ class Llama extends Clonable {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-> Define copying and equality
+> Define copying and equality in Java
 
 Implement `clone()` method:
 
@@ -255,7 +259,7 @@ class Llama extends Clonable {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-> Define copying and equality
+> Define copying and equality in Java
 
 Then we would have to define `equals()` as well..
 
@@ -347,8 +351,8 @@ Some examples of what case class does:
   + HashCode
   + toString
   + Serialisable
-  + Easy pattern matching
-  + Implementing Algebraic Data Types
+  + Pattern matching
+  + Algebraic Data Types
   </script></section><section  data-markdown><script type="text/template">
 > Drawback of Case Class
 
@@ -364,66 +368,29 @@ Functional programs are just a collection of functions which take data, manipula
 
 > This goes to the heart of functional programming
 </script></section><section  data-markdown><script type="text/template">
-This brings up a problem. What about the shave method?
-</script></section><section  data-markdown><script type="text/template">
-We could leave it in there. And that's okay (somewhat controversial). But a more functional way of doing things is to separate our data and our logic.
+This brings up a problem. What about the shave method? 
 </script></section><section  data-markdown><script type="text/template">
 ## Singleton Objects
-
-<aside class="notes"><p>We can now put this function in a singleton object</p>
-<ul>
-<li>This is a little like <code>static</code> in Java</li>
-<li>Whiteboard this up: It&#39;s just a single instance of a class.</li>
-<li>There is only 1. Zero is too few. 2 is far too many. 1 exists forever and always (not actually true, it&#39;s lazy loaded, but that&#39;s for another time)</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-```scala
-object LlamaShaver
-```
-</script></section><section  data-markdown><script type="text/template">
-```scala
-object LlamaShaver {
-  
-  def shave(llama: Llama, woolAmt: Int): Llama = Llama(llama.fluffyness - woolAmt, llama.strength, llama.name)
-  
-}
-```
-
-<aside class="notes"><p>That&#39;s a bit verbose. We can do better. Fortunately that&#39;s easy in Scala, thanks to case classes.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-```scala
-object LlamaShaver {
-
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
-
-}
-```
-<aside class="notes"><p>Kind of a bit of work isn&#39;t it? And now this Llama shaver object is kind of sitting out in space, not really connected to the class it&#39;s supposed to work on</p>
-<ul>
-<li>Never fear Scala is here!</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-## Companion Objects
 
 <aside class="notes"><p>Like singleton objects, but attached to a class of some kind.</p>
 <ul>
 <li>Just change the name of the object to be the same as the class.</li>
+<li>Whiteboard this up</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Give it the same name as it's class:
+Declare an object:
 ```scala
-object Llama {
+case class Llama(fluffyness: Int, strength: Int, name: String)
 
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
-
-}
+object Llama 
 ```
 
 <aside class="notes"><p>Now we can put it in the same file as our class and they hang out together.</p>
+<ul>
+<li>It has the same name as it&#39;s companion class</li>
+</ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Put them together in the same file:
+Add the shave method:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String)
 
@@ -440,7 +407,62 @@ object Llama {
 <li>Let&#39;s review what we just did on the whiteboard: Show what these things look like in intellij, as well as in diagram form</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-## Monetising the Llamas further
+Why do that? Why not just have it in the class?
+</script></section><section  data-markdown><script type="text/template">
+`shave` now takes a llama as well. It is stateless.
+
+It behaves in a static manner instead of like a method in OO.
+
+<aside class="notes"><p>So what is that exactly?</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+It has clearly defined immutable inputs and outputs in it's first line.
+
+```scala
+def shave(llama: Llama, woolAmt: Int): Llama = //...
+```
+
+<aside class="notes"><p>So how does that benefit us?</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+In complex programs, this makes things easier to understand. All you need to know is the inputs and outputs.
+
+> There are no external "global" variables it relies on.
+
+<aside class="notes"><p>Global variables are kind of a good example here. 
+If your function uses a global variables from <em>outside</em> the function then that&#39;s easy to miss.
+Class variables can be a little like those global variables. They&#39;re <em>not</em> constant, even though they are immutable.
+That&#39;s because there are many instances of that class.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+This makes testing and Test Driven Development easier as well.
+</script></section><section  data-markdown><script type="text/template">
+Let's recap.
+</script></section><section  data-markdown><script type="text/template">
+We implemented copy and equality in Java and Scala
+> Scala saved on boilerplate with case class.
+</script></section><section  data-markdown><script type="text/template">
+We implemented case class and companion objects in Scala
+> This made our code more functional, which brings a variety of benefits.
+  </script></section><section  data-markdown><script type="text/template">
+A few things to remember before we continue.
+</script></section><section  data-markdown><script type="text/template">
+There are benefits to both FP and OO/Imperative styles.
+
+> Scala is flexible in that it allows both OO and FP.
+
+This being good or bad is a matter of opinion.
+
+<aside class="notes"><p>I personally believe it&#39;s good, my ideal program is a functional core, with a thin imperative shell to run it.</p>
+<ul>
+<li>Scala is still more object orientated than Haskell for example.</li>
+<li>It can be argued that it&#39;s more object orientated than Java as well.</li>
+</ul>
+</aside></script></section><section  data-markdown><script type="text/template">
+Objects in scala don't have to be companion objects.
+> Singleton objects don't need no class.
+</script></section><section  data-markdown><script type="text/template">
+Questions before we move on?
+
+> How are we doing for time?
+</script></section><section  data-markdown><script type="text/template">## Monetising the Llamas further
 We have taken on a contract from a french fashion company to advertise hats.
 </script></section><section  data-markdown><script type="text/template">
 All llamas now have four types of Hats:
@@ -455,22 +477,39 @@ Each hat requires a trick when a traveller sees them:
 - Marseille Hat => Talk
 - Nice Hat => Triple backflip
 </script></section><section  data-markdown><script type="text/template">
-Ideal code:
+What your end result should like:
 ```
 > println(llama.trick)
 "Talk"
 ```
 </script></section><section  data-markdown><script type="text/template">
-We need a function that returns to a llama what trick it should do.
+Let's think about this...
 
 <aside class="notes"><p>Let&#39;s use ADT</p>
 <ul>
-<li>Let&#39;s think about this..</li>
+<li>Let&#39;s think about this...</li>
 <li>The funciton needs to map each hat to a trick</li>
 <li>A hat can come in four different flavours, but each llama <em>always</em> has a hat.</li>
 <li>All llamas need to do tricks with their hat</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
+All llamas have hats, but a hat can come in four different flavours.
+</script></section><section  data-markdown><script type="text/template">
+There are a few different ways of doing this.
+</script></section><section  data-markdown><script type="text/template">
+Each Llama could store a string that describes the hat:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String, Hat: String)
+```
+</script></section><section  data-markdown><script type="text/template">
+Why is that bad?
+</script></section><section  data-markdown><script type="text/template">
+We could recieve any input, then...
+
+> We would have a runtime error instead of a compile time error.
+</script></section><section  data-markdown><script type="text/template">
+How do we get a compile time error? Enumorator maybe?
+</script></section><section  data-markdown><script type="text/template">
 ## Traits
 
 <aside class="notes"><p>Like interfaces from Java.</p>
