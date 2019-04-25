@@ -105,7 +105,7 @@ Adding a method in Scala:
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit {
-    woolAmt - fluffyness
+    fluffyness = woolAmt - fluffyness
   }
   
 }
@@ -164,6 +164,8 @@ Let's recap so far:
  - Scala had less boilerplate
  - Scala kept things functional
  </script></section><section  data-markdown><script type="text/template">
+Onto the next step...
+</script></section><section  data-markdown><script type="text/template">
 ## Mergers & Aquisitions
 We have succeeded in our hostile takeover of *Llama Transport Co* in the Andes.
 
@@ -316,35 +318,16 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Copy and print equality in Java:
-```java
-Llama llama = new Llama(1,1,"Dalai");
-Llama llamaCopy = llama.clone();
-
-System.out.println(llama.equals(llamaCopy));
-```
-</script></section><section  data-markdown><script type="text/template">
-Copy and print equality in Scala:
-```scala
-val llama = Llama(1,1,"Dalai")
-val llamaCopy = llama.copy()
-
-println(llama == llamaCopy)
-```
-
-<aside class="notes"><p>More or less the same as Java, but a lil shorter.</p>
-<ul>
-<li>We no longer say <code>new</code> when declaring a new instance of a case class</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
 Cool. What is a case class?
+</script></section><section  data-markdown><script type="text/template">
+First, ignore the implications the title "case class"  gives you.
 </script></section><section  data-markdown><script type="text/template">
 It's just a package for data.
 - You could think of it as:
   - A struct
   - JSON
 </script></section><section  data-markdown><script type="text/template">
-Some examples of what case class does:
+It gives you stuff you might want for data:
   + Syntactic sugar
   + Equality
   + Copying
@@ -360,7 +343,7 @@ Your compiled code is a little larger due to implementing all this.
 </script></section><section  data-markdown><script type="text/template">
 We generally don't store methods in here, in an attempt to keep thing more functional.
 </script></section><section  data-markdown><script type="text/template">
-Wait...why?
+So why are we doing all of this?
 </script></section><section  data-markdown><script type="text/template">
 Object orientated is a collection of objects: Each one a combination of data and functions.
 </script></section><section  data-markdown><script type="text/template">
@@ -370,12 +353,16 @@ Functional programs are just a collection of functions which take data, manipula
 </script></section><section  data-markdown><script type="text/template">
 This brings up a problem. What about the shave method? 
 </script></section><section  data-markdown><script type="text/template">
-## Singleton Objects
+## Companion Objects
 
 <aside class="notes"><p>Like singleton objects, but attached to a class of some kind.</p>
 <ul>
 <li>Just change the name of the object to be the same as the class.</li>
-<li>Whiteboard this up</li>
+<li>Whiteboard this up<ul>
+<li>There exists only one object, never 0, never more than 1.</li>
+<li>They are lazy loaded, so technically they don&#39;t exist before then, actually.</li>
+</ul>
+</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
 Declare an object:
@@ -453,16 +440,46 @@ This being good or bad is a matter of opinion.
 <aside class="notes"><p>I personally believe it&#39;s good, my ideal program is a functional core, with a thin imperative shell to run it.</p>
 <ul>
 <li>Scala is still more object orientated than Haskell for example.</li>
+<li>This has some benefits in being easier to integrate with other langauge as well<ul>
+<li>Scala runs on the JVM</li>
+<li>Scala runs Java code</li>
+</ul>
+</li>
 <li>It can be argued that it&#39;s more object orientated than Java as well.</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
 Objects in scala don't have to be companion objects.
 > Singleton objects don't need no class.
 </script></section><section  data-markdown><script type="text/template">
-Questions before we move on?
+## Singleton Objects
+</script></section><section  data-markdown><script type="text/template">
+## Whiteboarding Time
+</script></section><section  data-markdown><script type="text/template">
+Example of a singleton object:
+```scala
+object DalaiLama {
+  
+  val HardCodedValue = 100
+  
+  def foo(bar: Int): Int = {
+    bar - HardCodedValue 
+  }
+  
+}
+```
+
+> There can only be one.
+</script></section><section  data-markdown><script type="text/template">
+Differences between singleton objects and companion objects:
+ - Companion objects:
+   - Are in the same file as their class
+   - Have the same name as their class
+</script></section><section  data-markdown><script type="text/template">
+End part one. Kahoot?
 
 > How are we doing for time?
-</script></section><section  data-markdown><script type="text/template">## Monetising the Llamas further
+</script></section><section  data-markdown><script type="text/template">
+## Monetising the Llamas further
 We have taken on a contract from a french fashion company to advertise hats.
 </script></section><section  data-markdown><script type="text/template">
 All llamas now have four types of Hats:
@@ -493,13 +510,18 @@ Let's think about this...
 <li>All llamas need to do tricks with their hat</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-All llamas have hats, but a hat can come in four different flavours.
+All llamas *must* have hats, but a hat can come in four different flavours.
 </script></section><section  data-markdown><script type="text/template">
 There are a few different ways of doing this.
 </script></section><section  data-markdown><script type="text/template">
 Each Llama could store a string that describes the hat:
 ```scala
-case class Llama(fluffyness: Int, strength: Int, name: String, Hat: String)
+case class Llama (
+  fluffyness: Int,
+  strength: Int,
+  name: String,
+  hat: String
+)
 ```
 </script></section><section  data-markdown><script type="text/template">
 Why is that bad?
@@ -508,7 +530,8 @@ We could recieve any input, then...
 
 > We would have a runtime error instead of a compile time error.
 </script></section><section  data-markdown><script type="text/template">
-How do we get a compile time error? Enumorator maybe?
+How do we get a compile time error? 
+> Enumerator?
 </script></section><section  data-markdown><script type="text/template">
 ## Traits
 
@@ -521,7 +544,7 @@ How do we get a compile time error? Enumorator maybe?
 </aside></script></section><section  data-markdown><script type="text/template">
 Create a trait:
 ```scala
-trait hat
+trait Hat
 ```
 
 <aside class="notes"><p>Cool! We made a trait. Now lets do something with it.</p>
@@ -535,6 +558,8 @@ case object Toulouse extends Hat
 case object Marseille extends Hat
 case object Nice extends Hat
 ```
+</script></section><section  data-markdown><script type="text/template">
+What is a case object?
 
 <aside class="notes"><p>Woah! Case object? What is that?</p>
 <ul>
@@ -551,17 +576,20 @@ Let's go back to our llama class...
 </aside></script></section><section  data-markdown><script type="text/template">
 Pattern Matching:
 ```scala
-def trick(llama: Llama): String = {
-  
-  val trick = llama.hat match {
-    case Paris => "Sit"
-    case Toulouse => "Shake"
-    case Marseille => "Talk"
-    case Nice => "Triple backflip"
+object Llama {
+
+  def trick(llama: Llama): String = {
+
+    val trick = llama.hat match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+
+    return trick
   }
-  
-  return trick
-  
+
 }
 ```
 
@@ -618,14 +646,13 @@ sealed trait Hat {
 
   def eatHat: Hat = this match {
     case Paris(numOfApples) => Paris(numOfApples - 1)
-    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges -1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
     case marseille @ Marseille(_) => marseille
     case Nice => Paris(5)
   }
 
 }
 ```
-
 </script></section><section  data-markdown><script type="text/template">
 You're fired! We're switching back to object orientated, that was too hard.
 </script></section><section  data-markdown><script type="text/template">

@@ -114,7 +114,7 @@ Adding a method in Scala:
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit {
-    woolAmt - fluffyness
+    fluffyness = woolAmt - fluffyness
   }
   
 }
@@ -184,6 +184,10 @@ Let's recap so far:
  - Scala had less boilerplate
  - Scala kept things functional
  
+---
+
+Onto the next step...
+
 ---
 
 ## Mergers & Aquisitions
@@ -358,30 +362,11 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
 ---
 
-Copy and print equality in Java:
-```java
-Llama llama = new Llama(1,1,"Dalai");
-Llama llamaCopy = llama.clone();
-
-System.out.println(llama.equals(llamaCopy));
-```
-
----
-
-Copy and print equality in Scala:
-```scala
-val llama = Llama(1,1,"Dalai")
-val llamaCopy = llama.copy()
-
-println(llama == llamaCopy)
-```
-
-Note: More or less the same as Java, but a lil shorter.
-- We no longer say `new` when declaring a new instance of a case class
-
----
-
 Cool. What is a case class?
+
+---
+
+First, ignore the implications the title "case class"  gives you.
 
 ---
 
@@ -392,7 +377,7 @@ It's just a package for data.
 
 ---
 
-Some examples of what case class does:
+It gives you stuff you might want for data:
   + Syntactic sugar
   + Equality
   + Copying
@@ -414,7 +399,7 @@ We generally don't store methods in here, in an attempt to keep thing more funct
 
 ---
 
-Wait...why?
+So why are we doing all of this?
 
 ---
 
@@ -432,11 +417,13 @@ This brings up a problem. What about the shave method?
 
 ---
 
-## Singleton Objects
+## Companion Objects
 
 Note: Like singleton objects, but attached to a class of some kind.
 - Just change the name of the object to be the same as the class.
 - Whiteboard this up
+  - There exists only one object, never 0, never more than 1.
+  - They are lazy loaded, so technically they don't exist before then, actually.
 
 ---
 
@@ -532,6 +519,9 @@ This being good or bad is a matter of opinion.
 
 Note: I personally believe it's good, my ideal program is a functional core, with a thin imperative shell to run it.
 - Scala is still more object orientated than Haskell for example.
+- This has some benefits in being easier to integrate with other langauge as well
+  - Scala runs on the JVM
+  - Scala runs Java code
 - It can be argued that it's more object orientated than Java as well.
 
 ---
@@ -541,11 +531,44 @@ Objects in scala don't have to be companion objects.
 
 ---
 
-Questions before we move on?
+## Singleton Objects
+
+---
+
+## Whiteboarding Time
+
+---
+
+Example of a singleton object:
+```scala
+object DalaiLama {
+  
+  val HardCodedValue = 100
+  
+  def foo(bar: Int): Int = {
+    bar - HardCodedValue 
+  }
+  
+}
+```
+
+> There can only be one.
+
+---
+
+Differences between singleton objects and companion objects:
+ - Companion objects:
+   - Are in the same file as their class
+   - Have the same name as their class
+
+---
+
+End part one. Kahoot?
 
 > How are we doing for time?
 
 ---
+
 ## Monetising the Llamas further
 We have taken on a contract from a french fashion company to advertise hats.
 
@@ -585,7 +608,7 @@ Note: Let's use ADT
 
 ---
 
-All llamas have hats, but a hat can come in four different flavours.
+All llamas *must* have hats, but a hat can come in four different flavours.
 
 ---
 
@@ -595,7 +618,12 @@ There are a few different ways of doing this.
 
 Each Llama could store a string that describes the hat:
 ```scala
-case class Llama(fluffyness: Int, strength: Int, name: String, Hat: String)
+case class Llama (
+  fluffyness: Int,
+  strength: Int,
+  name: String,
+  hat: String
+)
 ```
 
 ---
@@ -610,7 +638,8 @@ We could recieve any input, then...
 
 ---
 
-How do we get a compile time error? Enumorator maybe?
+How do we get a compile time error? 
+> Enumerator?
 
 ---
 
@@ -625,7 +654,7 @@ Note: Like interfaces from Java.
 
 Create a trait:
 ```scala
-trait hat
+trait Hat
 ```
 
 Note: Cool! We made a trait. Now lets do something with it.
@@ -641,6 +670,10 @@ case object Toulouse extends Hat
 case object Marseille extends Hat
 case object Nice extends Hat
 ```
+
+---
+
+What is a case object?
 
 Note: Woah! Case object? What is that?
 - All the same things case does to class, we do to object.
@@ -659,17 +692,20 @@ Note: We have now added hat as a value to llama.
 
 Pattern Matching:
 ```scala
-def trick(llama: Llama): String = {
-  
-  val trick = llama.hat match {
-    case Paris => "Sit"
-    case Toulouse => "Shake"
-    case Marseille => "Talk"
-    case Nice => "Triple backflip"
+object Llama {
+
+  def trick(llama: Llama): String = {
+
+    val trick = llama.hat match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+
+    return trick
   }
-  
-  return trick
-  
+
 }
 ```
 
@@ -734,14 +770,13 @@ sealed trait Hat {
 
   def eatHat: Hat = this match {
     case Paris(numOfApples) => Paris(numOfApples - 1)
-    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges -1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
     case marseille @ Marseille(_) => marseille
     case Nice => Paris(5)
   }
 
 }
 ```
-
 
 ---
 
