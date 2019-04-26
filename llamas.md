@@ -27,15 +27,15 @@ You've been asked to...
 
 ---
 
-- Create a concept of a llama
+Create a concept of a llama
 
 ---
 
-- It should store it's fluffyness somehow
+It should store it's fluffyness somehow
   
 ---
 
-- It should be able to be shaved, reducing it's fluffyness
+It should be able to be shaved, reducing it's fluffyness
 
 ---
 
@@ -44,13 +44,14 @@ You've been asked to...
 ---
 
 Basic class in Java:
+
 ```java
 class Llama {}
 ```
 
 ---
 
-Basic Class in Scala:
+Basic class in Scala:
 ```scala
 class Llama
 ```
@@ -168,7 +169,7 @@ Let's do this the short way:
 class Llama(fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
-    new Llama(fluffyness - woolAmt)
+    new llama(fluffyness - woolAmt)
 
 }
 ```
@@ -563,7 +564,7 @@ Differences between singleton objects and companion objects:
 
 ---
 
-End part one. Kahoot?
+Onto the next step!
 
 > How are we doing for time?
 
@@ -675,12 +676,17 @@ case object Nice extends Hat
 
 What is a case object?
 
-Note: Woah! Case object? What is that?
-- All the same things case does to class, we do to object.
-- But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
-- Why not just object extends hat here?
-- We want to pattern match. Let's see that.
-- By the way. This is just an enumorator.
+---
+
+All the same things case does to class, we do to object.
+
+---
+
+But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
+
+---
+
+We want to pattern match. Let's see that.
 
 ---
 
@@ -714,17 +720,20 @@ Note: This is pattern matching. At the moment, this is the equivalent of making 
 
 ---
 
-Golfed:
+A bit shorter...
 ```scala
-def trick(llama: Llama): String = {
-  
-  llama.hat match {
-    case Paris => "Sit"
-    case Toulouse => "Shake"
-    case Marseille => "Talk"
-    case Nice => "Triple backflip"
+object Llama {
+
+  def trick(llama: Llama): String = {
+
+    llama.hat match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+
   }
-  
 }
 ```
 
@@ -780,7 +789,7 @@ sealed trait Hat {
 
 ---
 
-You're fired! We're switching back to object orientated, that was too hard.
+We're switching back to object orientated, that was too hard.
 
 ---
 

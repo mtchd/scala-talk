@@ -33,20 +33,21 @@ We're going to learn:
 </aside></script></section><section  data-markdown><script type="text/template">
 You've been asked to...
 </script></section><section  data-markdown><script type="text/template">
-- Create a concept of a llama
+Create a concept of a llama
 </script></section><section  data-markdown><script type="text/template">
-- It should store it's fluffyness somehow
+It should store it's fluffyness somehow
   </script></section><section  data-markdown><script type="text/template">
-- It should be able to be shaved, reducing it's fluffyness
+It should be able to be shaved, reducing it's fluffyness
 </script></section><section  data-markdown><script type="text/template">
 ## Whiteboarding Time
 </script></section><section  data-markdown><script type="text/template">
 Basic class in Java:
+
 ```java
 class Llama {}
 ```
 </script></section><section  data-markdown><script type="text/template">
-Basic Class in Scala:
+Basic class in Scala:
 ```scala
 class Llama
 ```
@@ -148,7 +149,7 @@ Let's do this the short way:
 class Llama(fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
-    new Llama(fluffyness - woolAmt)
+    new llama(fluffyness - woolAmt)
 
 }
 ```
@@ -475,7 +476,7 @@ Differences between singleton objects and companion objects:
    - Are in the same file as their class
    - Have the same name as their class
 </script></section><section  data-markdown><script type="text/template">
-End part one. Kahoot?
+Onto the next step!
 
 > How are we doing for time?
 </script></section><section  data-markdown><script type="text/template">
@@ -560,16 +561,13 @@ case object Nice extends Hat
 ```
 </script></section><section  data-markdown><script type="text/template">
 What is a case object?
-
-<aside class="notes"><p>Woah! Case object? What is that?</p>
-<ul>
-<li>All the same things case does to class, we do to object.</li>
-<li>But it&#39;s a little less. We don&#39;t need stuff like copy or equality, as there is only ever one.</li>
-<li>Why not just object extends hat here?</li>
-<li>We want to pattern match. Let&#39;s see that.</li>
-<li>By the way. This is just an enumorator.</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
+</script></section><section  data-markdown><script type="text/template">
+All the same things case does to class, we do to object.
+</script></section><section  data-markdown><script type="text/template">
+But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
+</script></section><section  data-markdown><script type="text/template">
+We want to pattern match. Let's see that.
+</script></section><section  data-markdown><script type="text/template">
 Let's go back to our llama class...
 
 <aside class="notes"><p>We have now added hat as a value to llama.</p>
@@ -598,17 +596,20 @@ object Llama {
 <li>We can do better syntax.</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Golfed:
+A bit shorter...
 ```scala
-def trick(llama: Llama): String = {
-  
-  llama.hat match {
-    case Paris => "Sit"
-    case Toulouse => "Shake"
-    case Marseille => "Talk"
-    case Nice => "Triple backflip"
+object Llama {
+
+  def trick(llama: Llama): String = {
+
+    llama.hat match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+
   }
-  
 }
 ```
 
@@ -654,7 +655,7 @@ sealed trait Hat {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-You're fired! We're switching back to object orientated, that was too hard.
+We're switching back to object orientated, that was too hard.
 </script></section><section  data-markdown><script type="text/template">
 Questions!
 
