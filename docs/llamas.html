@@ -15,6 +15,10 @@
     <div class="reveal">
       <div class="slides"><section  data-markdown><script type="text/template">
 
+Go to www.menti.com and use the code 16 32 90
+
+> We will review questions at the end. Feedback is just for me.
+</script></section><section  data-markdown><script type="text/template">
 ## What a Wonderful Day for Scala
 
 We're going to learn:
@@ -103,10 +107,10 @@ class Llama {
 </script></section><section  data-markdown><script type="text/template">
 Adding a method in Scala:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(fluffyness: Int) = {
   
   def shave(woolAmt: Int): Unit {
-    fluffyness = woolAmt - fluffyness
+    fluffyness = fluffyness - woolAmts
   }
   
 }
@@ -149,7 +153,7 @@ Let's do this the short way:
 class Llama(fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
-    new llama(fluffyness - woolAmt)
+    new Llama(fluffyness - woolAmt)
 
 }
 ```
@@ -532,7 +536,13 @@ We could recieve any input, then...
 > We would have a runtime error instead of a compile time error.
 </script></section><section  data-markdown><script type="text/template">
 How do we get a compile time error? 
-> Enumerator?
+> Enumeration?
+</script></section><section  data-markdown><script type="text/template">
+Some problems with Enumerators:
+
+1. Enumerations have the same type after erasure.
+2. There’s no exhaustive matching check during compile.
+3. They don’t inter-operate with Java’s enum.
 </script></section><section  data-markdown><script type="text/template">
 ## Traits
 
@@ -566,7 +576,7 @@ All the same things case does to class, we do to object.
 </script></section><section  data-markdown><script type="text/template">
 But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
 </script></section><section  data-markdown><script type="text/template">
-We want to pattern match. Let's see that.
+We want to pattern match.
 </script></section><section  data-markdown><script type="text/template">
 Let's go back to our llama class...
 

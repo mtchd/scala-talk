@@ -5,6 +5,12 @@ revealOptions:
     transition: 'fade'
 ---
 
+Go to www.menti.com and use the code 16 32 90
+
+> We will review questions at the end. Feedback is just for me.
+
+---
+
 ## What a Wonderful Day for Scala
 
 We're going to learn:
@@ -112,10 +118,10 @@ class Llama {
 
 Adding a method in Scala:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(fluffyness: Int) = {
   
   def shave(woolAmt: Int): Unit {
-    fluffyness = woolAmt - fluffyness
+    fluffyness = fluffyness - woolAmts
   }
   
 }
@@ -169,7 +175,7 @@ Let's do this the short way:
 class Llama(fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
-    new llama(fluffyness - woolAmt)
+    new Llama(fluffyness - woolAmt)
 
 }
 ```
@@ -640,7 +646,15 @@ We could recieve any input, then...
 ---
 
 How do we get a compile time error? 
-> Enumerator?
+> Enumeration?
+
+---
+
+Some problems with Enumerators:
+
+1. Enumerations have the same type after erasure.
+2. There’s no exhaustive matching check during compile.
+3. They don’t inter-operate with Java’s enum.
 
 ---
 
@@ -686,7 +700,7 @@ But it's a little less. We don't need stuff like copy or equality, as there is o
 
 ---
 
-We want to pattern match. Let's see that.
+We want to pattern match.
 
 ---
 
