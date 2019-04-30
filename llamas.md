@@ -87,22 +87,48 @@ This is cool because it's so much less verbose than java!
 Creating an instance with a field:
 ```scala
 val pajamaLlama = new Llama(1)
+
+// ...
+```
+
+---
+
+Accessing a field:
+```scala
+val pajamaLlama = new Llama(1)
 println(pajamaLlama.fluffyness)
 // Prints "1"
 ```
 
 ---
 
-Adding a method:
+Actually, that wouldn't work. Fluffyness was declared as a private value. We need a getter to access it.
+
+> A getter is a public method (can be accessed from outside the class), that will give us that value.
+
+---
+
+Declaring as a val creates a getter under the hood:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
     
   }
 }
 ```
-> `Unit` means "Nothing" 
+
+---
+
+Adding a method definition:
+```scala
+class Llama(val fluffyness: Int) {
+  
+  def shave(woolAmt: Int): Unit = {
+    // Note that Unit means "Nothing"  
+  }
+}
+```
 
 Note: 
 Now, let's add some logic to that method. Otherwise it doesn't do anything!
@@ -110,16 +136,15 @@ As the clueless OO programmer you are, you might write something verbose like th
 
 ---
 
-Adding a method in Scala:
+Adding some logic:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
     fluffyness = fluffyness - woolAmt
   }
 }
 ```
-> `Unit` means "Nothing" 
 
 ---
 
@@ -503,80 +528,7 @@ It's possible to get around this restriction, but clunky.
 
 ---
 
-Pattern Matching:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-
-
-
-    }
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-Create a case to match:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-      case "I want a Llama with strength 3 and fluffyness 1"
-
-
-    }
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-What to return on a match:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-      case "I want a Llama with strength 3 and fluffyness 1" => this(1,3,"Parma")
-
-
-    }
-  }
-  
-  // shave definition... 
-}
-
-```
-
----
-
-What to return when no match?
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-      case "I want a Llama with strength 3 and fluffyness 1" => this(1,3,"Parma")
-      //...
-      case _ => // ???
-    }
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-Instead, let's make a function that does that...
+Instead, let's make a function as our constructor
 
 ---
 
@@ -735,37 +687,6 @@ def createLlamaFromRequest(request: String): Option[Llama] = {
     //...
     case _ => None
   }
-   
-}
-```
-
-
----
-
-With `Option`:
-```scala
-def createLlamaFromRequest(request: String): Option[Llama] = {
-
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => // ???
-   }
-   
-}
-```
-
----
-
-Return None:
-```scala
-def createLlamaFromRequest(request: String): Option[Llama] = {
-
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => None // This is the equivalent of null
-   }
    
 }
 ```
