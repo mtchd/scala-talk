@@ -18,9 +18,9 @@
 ## What a Wonderful Day for Scala
 
 We're going to learn:
+- Classes in Scala
 - Case Classes
 - Companion/Singleton Objects
-- (Sealed)Traits
 </script></section><section  data-markdown><script type="text/template">
 ## You've been hired!
 ![fab llama](assets/fab_llama.gif)
@@ -57,11 +57,6 @@ class Llama {
 We need to measure fluffyness somehow!</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Creating a value:
-```scala
-val bananaLlama =
-```
-</script></section><section  data-markdown><script type="text/template">
 Creating an instance of the class (an object):
 ```scala
 val bananaLlama = new Llama()
@@ -87,38 +82,62 @@ This is cool because it&#39;s so much less verbose than java!</li>
 Creating an instance with a field:
 ```scala
 val pajamaLlama = new Llama(1)
+
+// ...
+```
+</script></section><section  data-markdown><script type="text/template">
+Accessing a field:
+```scala
+val pajamaLlama = new Llama(1)
 println(pajamaLlama.fluffyness)
 // Prints "1"
 ```
 </script></section><section  data-markdown><script type="text/template">
-Adding a method in Scala:
+Actually, that wouldn't work. Fluffyness was declared as a private value.
+</script></section><section  data-markdown><script type="text/template">
+Declaring as a val allows us to access it outside of the class.
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
+  
+ 
+    
+  
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Now this will actually work:
+```scala
+val pajamaLlama = new Llama(1)
+println(pajamaLlama.fluffyness)
+// Prints "1"
+```
+</script></section><section  data-markdown><script type="text/template">
+Adding a method definition:
+```scala
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
-    
+    // Note that Unit means "Nothing"  
   }
 }
 ```
-> `Unit` means "Nothing" 
 
 <aside class="notes"><p>Now, let&#39;s add some logic to that method. Otherwise it doesn&#39;t do anything!
 As the clueless OO programmer you are, you might write something verbose like this:</p>
 </aside></script></section><section  data-markdown><script type="text/template">
-Adding a method in Scala:
+Adding some logic:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
-    fluffyness = fluffyness - woolAmts
+    fluffyness = fluffyness - woolAmt
   }
 }
 ```
-> `Unit` means "Nothing" 
 </script></section><section  data-markdown><script type="text/template">
 Wait...that didn't work!
 </script></section><section  data-markdown><script type="text/template">
-That's because fluffyness is now immutable!
+That's because fluffyness is immutable!
 </script></section><section  data-markdown><script type="text/template">
 Scala does this to ~~make your life hard~~ keep things functional.
  > All variables are immutable in FP
@@ -127,7 +146,7 @@ Scala does this to ~~make your life hard~~ keep things functional.
 </aside></script></section><section  data-markdown><script type="text/template">
 Now it returns a Llama:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Llama = {
 
@@ -138,7 +157,7 @@ class Llama(fluffyness: Int) {
 </aside></script></section><section  data-markdown><script type="text/template">
 Let's do that the long way:
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
   
   def shave(woolAmt: Int): Llama = {
     return new Llama(fluffyness - woolAmt)
@@ -149,7 +168,7 @@ class Llama(fluffyness: Int) {
 </aside></script></section><section  data-markdown><script type="text/template">
 We don't need `return`
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama = {
     new Llama(fluffyness - woolAmt)
@@ -159,7 +178,7 @@ class Llama(fluffyness: Int) {
 </script></section><section  data-markdown><script type="text/template">
 We don't need `{}`
 ```scala
-class Llama(fluffyness: Int) {
+class Llama(val fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
     new Llama(fluffyness - woolAmt)
@@ -177,12 +196,13 @@ Using a method:
 ```scala
 val dramaLlama = new Llama(5)
 val shavedLlama = dramaLlama.shave(3)
-println(shavedLlama)
+println(shavedLlama.fluffyness)
 // Prints 2
 ```
 </script></section><section  data-markdown><script type="text/template">
 Let's recap so far:
  - We made a class with a field and method
+  + A class is a schematic to create instances of itself
  - We've seen some basic syntax
  - Scala kept things functional
  </script></section><section  data-markdown><script type="text/template">
@@ -207,17 +227,21 @@ Copy objects:
 Check for equality:
 - Ensure they are the same as their copy when they come back.
 </script></section><section  data-markdown><script type="text/template">
-Update constructor and values:
+This is so we know the llamas haven't lost fluffyness or strength over their long and perilous journey!
+</script></section><section  data-markdown><script type="text/template">
+Update our fields:
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def shave(woolAmt: Int): Llama =
-      new Llama(fluffyness - woolAmt)
+    new Llama(fluffyness - woolAmt)
 
 }
 ```
+
+> `val` has been dropped for now, we'll see why later.
 </script></section><section  data-markdown><script type="text/template">
-Define copying and equality:
+Define copying and equality the long way:
 
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String) extends Cloneable {
@@ -261,10 +285,11 @@ It gives you stuff you might want for data:
   + Serialisable
   + Pattern matching
   + Algebraic Data Types
+  + Automatically defined getters and setters
   </script></section><section  data-markdown><script type="text/template">
 > Drawback of Case Class
 
-Your compiled code is a little larger due to implementing all this.
+Your compiled code is a little larger due to implementing all this. The program will also take longer to compile.
 </script></section><section  data-markdown><script type="text/template">
 How do we use case classes?
 </script></section><section  data-markdown><script type="text/template">
@@ -283,7 +308,7 @@ val alabamaLlama = Llama(5, 5, "Benny")
 val copyLlama = alabamaLlama.copy()
 
 
-// ...
+// copy is automatically implmented for us
 ```
 </script></section><section  data-markdown><script type="text/template">
 Check equality:
@@ -295,13 +320,21 @@ println(alabamaLlama == copyLlama)
 // prints true
 ```
 </script></section><section  data-markdown><script type="text/template">
-Summary
+In summary:
+Why do we have case classes?
 </script></section><section  data-markdown><script type="text/template">
-Why do have case classes?
+Good for storing data.
++ We indicate to people reading the code that it's data type
++ We get a lot of things for free
+  </script></section><section  data-markdown><script type="text/template">
+For example, we can wrap an int with a miles or kilometres case class:
+- We get equality for free, like we would with an int
+- Our space probes wont crash
+</script></section><section  data-markdown><script type="text/template">
+Recap:
 
-- Good for storing data.
-- Constraining primitive types with tiny types.
-- What else?
+- We've added more fields
+- We've turned Llama into case class, which has given us a variety of benefits
 </script></section><section  data-markdown><script type="text/template">
 Moving on...
 </script></section><section  data-markdown><script type="text/template">
@@ -313,7 +346,13 @@ Create a new Llama object from a string
 </script></section><section  data-markdown><script type="text/template">
 Such as: "I want a Llama with strength 3 and fluffyness 1"
 </script></section><section  data-markdown><script type="text/template">
-Let's build a constructor that makes a Llama from a string:
+Let's build a constructor that makes a Llama from a string
+</script></section><section  data-markdown><script type="text/template">
+You may think to use an auxillary constructor:
+```scala
+val fatherLlama =
+  Llama("I want a Llama with strength 3 and fluffyness 1")
+```
 </script></section><section  data-markdown><script type="text/template">
 In our case class:
 
@@ -332,13 +371,13 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Constructors in Scala:
+Define an auxillary constructor:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
 
-
+   
 
 
 
@@ -348,72 +387,51 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Pattern Matching:
+Add logic:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
-    request match {
+     
+    // Logic to turn string into fluffyness, strength and name
 
 
 
-    }
   }
   
   // shave definition...
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Create a case to match:
+Invoke the primary constructor:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
-    request match {
-      case "I want a Llama with strenth 3 and fluffyness 1"
+     
+    // Logic to turn string into fluffyness, strength and name
 
-
-    }
+    
+    this(requestedFluffyness, requestedStrength, randomName)
   }
   
   // shave definition...
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-What to return on a match:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
-
-
-    }
-  }
-  
-  // shave definition... 
-}
-
-```
+This won't work. Why?
 </script></section><section  data-markdown><script type="text/template">
-What to return when no match?
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-    request match {
-      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
-      //...
-      case _ => // ???
-    }
-  }
-  
-  // shave definition...
-}
-```
+Auxillary constructors need to invoke the primary constructor or another auxillary constructor in the first  line.
 </script></section><section  data-markdown><script type="text/template">
-Let's make a function that does that...
+This is so all auxillary constructors eventually invoke the primary constructor, making it the single point of entry to create the class.
+</script></section><section  data-markdown><script type="text/template">
+It's a little vague as to why it's in the first line, but:
+- It's because Java does it
+- It's so we can't access fields that don't exist yet.
+</script></section><section  data-markdown><script type="text/template">
+It's possible to get around this restriction, but clunky.
+</script></section><section  data-markdown><script type="text/template">
+Instead, let's make a function as our constructor
 </script></section><section  data-markdown><script type="text/template">
 Declare fuction:
 ```scala
@@ -425,6 +443,89 @@ def createLlamaFromRequest(request: String): Llama = {
 
 
 
+
+
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+
+  
+  
+  
+  
+
+  }
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1"
+   
+   
+   
+   
+
+  }
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    
+    
+    
+
+  }
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    
+
+  }
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+And so on:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+
+  }
+   
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -432,11 +533,14 @@ Add logic from before:
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
 
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => // ???
-   }
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => // ???
+  }
    
 }
 ```
@@ -445,24 +549,46 @@ With `Option`:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
 
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => // ???
-   }
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => // ???
+  }
    
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Return None:
+Return `None`:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
 
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => None // This is the equivalent of null
-   }
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => None
+  }
+   
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Wrap with `Some`:
+```scala
+def createLlamaFromRequest(request: String): Option[Llama] = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Some(Llama(1, 3, "Parma"))
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Some(Llama(5 ,5, "Lava"))
+    //...
+    case _ => None
+  }
    
 }
 ```
@@ -489,6 +615,9 @@ object LlamaCreator {
 
 
 
+
+
+
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -499,7 +628,10 @@ object LlamaCreator {
 
   def createLlamaFromRequest(request: String): Option[Llama] = {
     request match {
-      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+      case "I want a Llama with strength 3 and fluffyness 1" =>
+        Some(Llama(1, 3, "Parma"))
+      case "Give me a Llama with strength 5 and fluffyness 5" =>
+        Some(Llama(5 ,5, "Lava"))
       //...
       case _ => None
     }
@@ -515,7 +647,6 @@ Declare a value:
 val wannaLlama: Option[Llama] =
 
 
-
 //...
 ```
 
@@ -525,7 +656,6 @@ Calling an object:
 
 ```scala
 val wannaLlama: Option[Llama] =
-
   LlamaCreator.createLlamaFromRequest(
 
   )
@@ -537,7 +667,6 @@ Calling an object:
 
 ```scala
 val wannaLlama: Option[Llama] = 
-
   LlamaCreator.createLlamaFromRequest(
     "I want a Llama with strength 3 and fluffyness 1"
   )
@@ -579,10 +708,10 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
  
 
 
- 
+
   
 
-// ...
+// Real quiet down here...
 ```
 </script></section><section  data-markdown><script type="text/template">
 Declare object with same name:
@@ -598,8 +727,8 @@ object Llama {
     
      
       
+      
    
-  
 
 }
 ```
@@ -614,19 +743,18 @@ object Llama {
 
   def createLlamaFromRequest(request: String): Option[Llama] = {
     request match {
-      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+      case "I want a Llama with strength 3 and fluffyness 1" =>
+        Some(Llama(1, 3, "Parma"))
       //...
       case _ => None
     }
   }
-
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
 Calling it works the same:
 ```scala
 val wannaLlama: Option[Llama] = 
-
   Llama.createLlamaFromRequest(
     "I want a Llama with strength 3 and fluffyness 1"
   )
@@ -645,7 +773,7 @@ Why do we have companion objects?
 
 - Makes more sense to a human
 - Can access private fields and methods
-- Can put constructors
+- Can put constructors in them
 - What else?
 </script></section><section  data-markdown><script type="text/template">
 Why have a constructor in a companion object?
@@ -654,229 +782,9 @@ Why have a constructor in a companion object?
 - More flexbility in what we return
 - What else?
 </script></section><section  data-markdown><script type="text/template">
-Onto the next step!
-
-> How are we doing for time?
-</script></section><section  data-markdown><script type="text/template">
-## Monetising the Llamas further
-We have taken on a contract from a french fashion company to advertise hats.
-</script></section><section  data-markdown><script type="text/template">
-All llamas now have four types of Hats:
-- Paris Hat
-- Toulouse Hat
-- Marseille Hat
-- Nice Hat
-</script></section><section  data-markdown><script type="text/template">
-Each hat requires a trick when a traveller sees them:
-- Paris Hat => Sit
-- Toulouse Hat => Shake
-- Marseille Hat => Talk
-- Nice Hat => Triple backflip
-</script></section><section  data-markdown><script type="text/template">
-What your end result should like:
-```
-> println(llama.trick)
-"Talk"
-```
-</script></section><section  data-markdown><script type="text/template">
-Let's think about this...
-
-<aside class="notes"><p>Let&#39;s use ADT</p>
-<ul>
-<li>Let&#39;s think about this...</li>
-<li>The funciton needs to map each hat to a trick</li>
-<li>A hat can come in four different flavours, but each llama <em>always</em> has a hat.</li>
-<li>All llamas need to do tricks with their hat</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-All llamas *must* have hats, but a hat can come in four different flavours.
-</script></section><section  data-markdown><script type="text/template">
-There are a few different ways of doing this.
-</script></section><section  data-markdown><script type="text/template">
-Each Llama could store a string that describes the hat:
-```scala
-case class Llama (
-  fluffyness: Int,
-  strength: Int,
-  name: String,
-  hat: String
-)
-```
-</script></section><section  data-markdown><script type="text/template">
-Why is that bad?
-</script></section><section  data-markdown><script type="text/template">
-We could recieve any input, then...
-
-> We would have a runtime error instead of a compile time error.
-</script></section><section  data-markdown><script type="text/template">
-How do we get a compile time error? 
-> Enumeration?
-</script></section><section  data-markdown><script type="text/template">
-Some problems with Enumeration:
-
-1. Enumerations have the same type after erasure.
-2. There’s no exhaustive matching check during compile.
-3. They don’t inter-operate with Java’s enum.
-</script></section><section  data-markdown><script type="text/template">
-## Traits
-
-<aside class="notes"><p>Like interfaces from Java.</p>
-<ul>
-<li>They are <code>extendable</code></li>
-<li>They came with their own methods/fields and abstract methods if you want</li>
-<li>But they are done a little more functionally</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-Create a trait:
-```scala
-trait Hat
-
-
-
-
-// ...
-```
-
-<aside class="notes"><p>Cool! We made a trait. Now lets do something with it.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-We now have a hat type!
-```scala
-val hat: Hat = // ???
-```
-</script></section><section  data-markdown><script type="text/template">
-Extend the trait:
-```scala
-trait Hat
-
-case object Paris extends Hat
-
-
-// ...
-```
-</script></section><section  data-markdown><script type="text/template">
-Now we can define:
-```scala
-val hat: Hat = Paris
-```
-</script></section><section  data-markdown><script type="text/template">
-
-Extend the trait further:
-```scala
-trait Hat
-
-case object Paris extends Hat
-case object Toulouse extends Hat
-case object Marseille extends Hat
-case object Nice extends Hat
-```
-</script></section><section  data-markdown><script type="text/template">
-Now we can define:
-```scala
-val parisHat: Hat = Paris
-val toulouseHat: Hat = Toulouse
-val marseilleHat: Hat = Marseille
-val niceHat: Hat = Nice
-```
-</script></section><section  data-markdown><script type="text/template">
-What is a case object?
-</script></section><section  data-markdown><script type="text/template">
-All the same things case does to class, we do to object.
-</script></section><section  data-markdown><script type="text/template">
-But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
-</script></section><section  data-markdown><script type="text/template">
-We want to pattern match.
-</script></section><section  data-markdown><script type="text/template">
-Let's go back to our llama class...
-
-<aside class="notes"><p>We have now added hat as a value to llama.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-Pattern Matching:
-```scala
-object Llama {
-
-  def trick(llama: Llama): String = {
-
-    val trick = llama.hat match {
-      case Paris => "Sit"
-      case Toulouse => "Shake"
-      case Marseille => "Talk"
-      case Nice => "Triple backflip"
-    }
-
-    return trick
-  }
-
-}
-```
-
-<aside class="notes"><p>This is pattern matching. At the moment, this is the equivalent of making an enumorator, then creating a switch statement in Java.</p>
-<ul>
-<li>We can do better syntax.</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-A bit shorter...
-```scala
-object Llama {
-
-  def trick(llama: Llama): String = {
-
-    llama.hat match {
-      case Paris => "Sit"
-      case Toulouse => "Shake"
-      case Marseille => "Talk"
-      case Nice => "Triple backflip"
-    }
-
-  }
-}
-```
-
-<aside class="notes"><p>This will just return that value that was declared into the damn void.</p>
-<ul>
-<li>In order for this pattern match to work, it would help if we <code>seal</code> our trait.</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-Seal our trait:
-```scala
-sealed trait Hat
-```
-
-<aside class="notes"><p>This means that no one can extend our trait outside of that file. It means the program is now confident that it has handled all possible cases of a hat in that pattern match.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-Turns out advertising hats in Andes mountain trails wasn't a great idea.
-
-<aside class="notes"><p>Our french company has pulled it&#39;s sponsorship. What do we do with all these hats!</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-We're pivoting to fruit hats.
-
-<aside class="notes"><p>Llamas now carry fruit in their hats, for the llamas to eat.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-```scala
-sealed trait Hat
-
-case class Paris(numOfApples: Int) extends Hat
-case class Toulouse(numOfApples: Int, numOfOranges: Int) extends Hat
-case class Marseille(numofPizzas: Int) extends Hat
-case object Nice extends Hat
-```
-</script></section><section  data-markdown><script type="text/template">
-```scala
-sealed trait Hat {
-
-  def eatHat: Hat = this match {
-    case Paris(numOfApples) => Paris(numOfApples - 1)
-    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
-    case marseille @ Marseille(_) => marseille
-    case Nice => Paris(5)
-  }
-
-}
-```
-</script></section><section  data-markdown><script type="text/template">
-We're switching back to object orientated, that was too hard.
+Okay, that was too hard, we're going back to object orientated!
 </script></section><section  data-markdown><script type="text/template">
 Questions!
-
 
 </script></section></div>
     </div>
