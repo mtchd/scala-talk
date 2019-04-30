@@ -5,12 +5,6 @@ revealOptions:
     transition: 'fade'
 ---
 
-Go to www.menti.com and use the code 16 32 90
-
-> We will review questions at the end. Feedback is just for me.
-
----
-
 ## What a Wonderful Day for Scala
 
 We're going to learn:
@@ -51,7 +45,12 @@ It should be able to be shaved, reducing it's fluffyness
 
 Basic class in Scala:
 ```scala
-class Llama
+class Llama {
+
+
+
+
+}
 ```
 
 Note: This is all it takes to make a class in Scala. It doesn't do much.
@@ -60,16 +59,28 @@ We need to measure fluffyness somehow!
 
 ---
 
-Creating an instance:
+Creating a value:
+```scala
+val bananaLlama =
+```
+
+---
+
+Creating an instance of the class (an object):
 ```scala
 val bananaLlama = new Llama()
 ```
 
 ---
 
-Adding a field in Scala:
+Adding a field to a class:
 ```scala
-class Llama(fluffyness: Int)
+class Llama(fluffyness: Int) {
+
+
+
+
+}
 ```
 
 Note: 
@@ -77,7 +88,6 @@ This will do a few things:
 - Add this as a required value to the class constructor
 - Save this as an immutable, private value within the class.
 This is cool because it's so much less verbose than java!
-Now, we need to actually change this value somehow. And do it functionally! As everything is immutable, you have to return a whole new Llama!
 
 ---
 
@@ -95,15 +105,28 @@ Adding a method in Scala:
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
-    fluffyness = fluffyness - woolAmts
+    
   }
 }
 ```
-> `Unit` is analogous to `void` in Java (it means "nothing")
+> `Unit` means "Nothing" 
 
 Note: 
 Now, let's add some logic to that method. Otherwise it doesn't do anything!
 As the clueless OO programmer you are, you might write something verbose like this:
+
+---
+
+Adding a method in Scala:
+```scala
+class Llama(fluffyness: Int) {
+  
+  def shave(woolAmt: Int): Unit = {
+    fluffyness = fluffyness - woolAmts
+  }
+}
+```
+> `Unit` means "Nothing" 
 
 ---
 
@@ -119,6 +142,19 @@ Scala does this to ~~make your life hard~~ keep things functional.
  > All variables are immutable in FP
 
 Note: Ask me this question at the end if we get time!
+
+---
+
+Now it returns a Llama:
+```scala
+class Llama(fluffyness: Int) {
+  
+  def shave(woolAmt: Int): Llama = {
+
+  }
+}
+```
+Note: This is a common pattern. So Scala has some nice syntactic sugar for doing this.
 
 ---
 
@@ -284,18 +320,6 @@ Your compiled code is a little larger due to implementing all this.
 
 ---
 
-Why do we have case classes?
-
----
-
-It makes our data easier to manipulate.
-
----
-
-Object orientated is a collection of objects: Each one a combination of data and functions.
-
----
-
 How do we use case classes?
 
 ---
@@ -327,9 +351,21 @@ Check equality:
 val alabamaLlama = Llama(5, 5, "Benny")
 val copyLlama = alabamaLlama.copy()
 
-println(bananaLlama == copyLlama)
+println(alabamaLlama == copyLlama)
 // prints true
 ```
+
+---
+
+Summary
+
+---
+
+Why do have case classes?
+
+- Good for storing data.
+- Constraining primitive types with tiny types.
+- What else?
 
 ---
 
@@ -406,7 +442,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
     }
   }
   
- // shave definition...
+  // shave definition...
 }
 ```
 
@@ -471,14 +507,31 @@ Let's make a function that does that...
 
 ---
 
-As a function:
+Declare fuction:
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
+
+
+
+  // Notice how we can name this function whatever we want.
+
+
+
+}
+```
+
+---
+
+Add logic from before:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
      case _ => // ???
    }
+   
 }
 ```
 
@@ -487,11 +540,13 @@ def createLlamaFromRequest(request: String): Llama = {
 With `Option`:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
      case _ => // ???
    }
+   
 }
 ```
 
@@ -500,11 +555,13 @@ def createLlamaFromRequest(request: String): Option[Llama] = {
 Return None:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
-     case _ => None
+     case _ => None // This is the equivalent of null
    }
+   
 }
 ```
 
@@ -522,11 +579,23 @@ Where does this function go?
 
 ## Whiteboarding Time
 
+> Dalai Llama
+
 ---
 
 Declaring an object:
 ```scala
-object LlamaCreator
+object LlamaCreator {
+
+
+
+
+
+
+
+
+
+}
 ```
 
 ---
@@ -543,20 +612,58 @@ object LlamaCreator {
       case _ => None
     }
   }
+  
 }
 ```
+
+---
+
+Let's use that object
+
+---
+
+Declare a value:
+```scala
+val wannaLlama: Option[Llama] =
+
+
+
+//...
+```
+
+> `wannaLlama` may or may not exist
 
 ---
 
 Calling an object:
 
 ```scala
-val wannaLlama = LlamaCreator.createLlamaFromRequest(
-  "I want a Llama with strength 3 and fluffyness 1"
-)
+val wannaLlama: Option[Llama] =
+
+  LlamaCreator.createLlamaFromRequest(
+
+  )
 ```
 
-> `wannaLlama may or may not exist`
+> `wannaLlama` may or may not exist
+
+---
+
+Calling an object:
+
+```scala
+val wannaLlama: Option[Llama] = 
+
+  LlamaCreator.createLlamaFromRequest(
+    "I want a Llama with strength 3 and fluffyness 1"
+  )
+```
+
+> `wannaLlama` may or may not exist
+
+---
+
+Problem: `llamaCreator` is rather separate from Llama right now. This can be confusing.
 
 ---
 
@@ -570,139 +677,118 @@ Note: Like singleton objects, but attached to a class of some kind.
 
 ---
 
-Declare an object:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
-
-object Llama 
-```
-
-Note: Now we can put it in the same file as our class and they hang out together.
-- It has the same name as it's companion class
+A companion object:
+ - Is in the same file as it's class
+ - Has the same name as it's class
+ - Can access private things in it's class
 
 ---
 
-Add the shave method:
+Let's see that in code
+
+---
+
+Next to our class:
 ```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
+
+
+
+ 
+
+ 
+
+
+ 
+  
+
+// ...
+```
+
+---
+
+Declare object with same name:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
 
 object Llama {
 
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
+  
+   
+    
+     
+      
+   
+  
 
 }
 ```
 
-Note: So now we have two nice and separate parts of the file - data and methods. Keeps it functional. But they are together in the same file, so it's still objects orientated as well.
-- Let's review what we just did on the whiteboard: Show what these things look like in intellij, as well as in diagram form
-
 ---
 
-Why do that? Why not just have it in the class?
-
----
-
-`shave` now takes a llama as well. It is stateless.
-
-It behaves in a static manner instead of like a method in OO.
-
-Note: So what is that exactly?
-
----
-
-It has clearly defined immutable inputs and outputs in it's first line.
-
+Add our method:
 ```scala
-def shave(llama: Llama, woolAmt: Int): Llama = //...
-```
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
 
-Note: So how does that benefit us?
+object Llama {
 
----
-
-In complex programs, this makes things easier to understand. All you need to know is the inputs and outputs.
-
-> There are no external "global" variables it relies on.
-
-Note: Global variables are kind of a good example here. 
-If your function uses a global variables from *outside* the function then that's easy to miss.
-Class variables can be a little like those global variables. They're *not* constant, even though they are immutable.
-That's because there are many instances of that class.
-
----
-
-This makes testing and Test Driven Development easier as well.
-
----
-
-Let's recap.
-
----
-
-We implemented copy and equality in Java and Scala
-> Scala saved on boilerplate with case class.
-
----
-
-We implemented case class and companion objects in Scala
-> This made our code more functional, which brings a variety of benefits.
-  
----
-
-A few things to remember before we continue.
-
----
-
-There are benefits to both FP and OO/Imperative styles.
-
-> Scala is flexible in that it allows both OO and FP.
-
-This being good or bad is a matter of opinion.
-
-Note: I personally believe it's good, my ideal program is a functional core, with a thin imperative shell to run it.
-- Scala is still more object orientated than Haskell for example.
-- This has some benefits in being easier to integrate with other langauge as well
-  - Scala runs on the JVM
-  - Scala runs Java code
-- It can be argued that it's more object orientated than Java as well.
-
----
-
-Objects in scala don't have to be companion objects.
-> Singleton objects don't need no class.
-
----
-
-## Singleton Objects
-
----
-
-## Whiteboarding Time
-
----
-
-Example of a singleton object:
-```scala
-object DalaiLama {
-  
-  val HardCodedValue = 100
-  
-  def foo(bar: Int): Int = {
-    bar - HardCodedValue 
+  def createLlamaFromRequest(request: String): Option[Llama] = {
+    request match {
+      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+      //...
+      case _ => None
+    }
   }
-  
+
 }
 ```
 
-> There can only be one.
+---
+
+Calling it works the same:
+```scala
+val wannaLlama: Option[Llama] = 
+
+  Llama.createLlamaFromRequest(
+    "I want a Llama with strength 3 and fluffyness 1"
+  )
+```
 
 ---
 
-Differences between singleton objects and companion objects:
- - Companion objects:
-   - Are in the same file as their class
-   - Have the same name as their class
+Summary
+
+---
+
+Why do we have singleton objects?
+
+- They provide a way to store "static" functions
+ + A bag of functions
+- Why not have static classes?
+- What else?
+
+---
+
+Why do we have companion objects?
+
+- Makes more sense to a human
+- Can access private fields and methods
+- Can put constructors
+- What else?
+
+---
+
+Why have a constructor in a companion object?
+
+- Can name it what we want
+- More flexbility in what we return
+- What else?
 
 ---
 
@@ -819,7 +905,6 @@ Note: Cool! We made a trait. Now lets do something with it.
 
 We now have a hat type!
 ```scala
-val panoramaLlama: Llama = Llama(2, 2, "E")
 val hat: Hat = // ???
 ```
 
@@ -860,6 +945,8 @@ case object Nice extends Hat
 Now we can define:
 ```scala
 val parisHat: Hat = Paris
+val toulouseHat: Hat = Toulouse
+val marseilleHat: Hat = Marseille
 val niceHat: Hat = Nice
 ```
 
