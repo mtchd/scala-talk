@@ -59,13 +59,6 @@ We need to measure fluffyness somehow!
 
 ---
 
-Creating a value:
-```scala
-val bananaLlama =
-```
-
----
-
 Creating an instance of the class (an object):
 ```scala
 val bananaLlama = new Llama()
@@ -100,7 +93,7 @@ println(pajamaLlama.fluffyness)
 
 ---
 
-Adding a method in Scala:
+Adding a method:
 ```scala
 class Llama(fluffyness: Int) {
   
@@ -122,7 +115,7 @@ Adding a method in Scala:
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
-    fluffyness = fluffyness - woolAmts
+    fluffyness = fluffyness - woolAmt
   }
 }
 ```
@@ -134,7 +127,7 @@ Wait...that didn't work!
 
 ---
 
-That's because fluffyness is now immutable!
+That's because fluffyness is immutable!
 
 ---
 
@@ -203,7 +196,7 @@ Using a method:
 ```scala
 val dramaLlama = new Llama(5)
 val shavedLlama = dramaLlama.shave(3)
-println(shavedLlama)
+println(shavedLlama.fluffyness)
 // Prints 2
 ```
 
@@ -211,6 +204,7 @@ println(shavedLlama)
 
 Let's recap so far:
  - We made a class with a field and method
+  + A class is a schematic to create instances of itself
  - We've seen some basic syntax
  - Scala kept things functional
  
@@ -247,7 +241,11 @@ Check for equality:
 
 ---
 
-Update constructor and values:
+This is so we know the llamas haven't lost fluffyness or strength over their long and perilous journey!
+
+---
+
+Update our fields:
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String) {
 
@@ -259,7 +257,7 @@ class Llama(fluffyness: Int, strength: Int, name: String) {
 
 ---
 
-Define copying and equality:
+Define copying and equality the long way:
 
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String) extends Cloneable {
@@ -311,6 +309,7 @@ It gives you stuff you might want for data:
   + Serialisable
   + Pattern matching
   + Algebraic Data Types
+  + Automatically defined getters and setters
   
 ---
 
@@ -341,7 +340,7 @@ val alabamaLlama = Llama(5, 5, "Benny")
 val copyLlama = alabamaLlama.copy()
 
 
-// ...
+// copy is automatically implmented for us
 ```
 
 ---
@@ -357,15 +356,27 @@ println(alabamaLlama == copyLlama)
 
 ---
 
-Summary
+In summary:
+Why do we have case classes?
 
 ---
 
-Why do have case classes?
+Good for storing data.
++ We indicate to people reading the code that it's data type
++ We get a lot of things for free
+  
+---
 
-- Good for storing data.
-- Constraining primitive types with tiny types.
-- What else?
+For example, we can wrap an int with a miles or kilometres case class:
+- We get equality for free, like we would with an int
+- Our space probes wont crash
+
+---
+
+Recap:
+
+- We've added more fields
+- We've turned Llama into case class, which has given us a variety of benefits
 
 ---
 
@@ -389,7 +400,11 @@ Such as: "I want a Llama with strength 3 and fluffyness 1"
 
 ---
 
-Let's build a constructor that makes a Llama from a string:
+Let's build a constructor that makes a Llama from a strin
+
+---
+
+You may think to use an auxillary constructor:
 
 ---
 
@@ -412,13 +427,13 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
 ---
 
-Constructors in Scala:
+Define an auxillary constructor:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
 
-
+   
 
 
 
@@ -427,6 +442,64 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
   // shave definition...
 }
 ```
+
+---
+
+Add logic:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+     
+    // Logic to turn string into fluffyness, strength and name
+
+
+
+  }
+  
+  // shave definition...
+}
+```
+
+---
+
+Invoke the primary constructor:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+     
+    // Logic to turn string into fluffyness, strength and name
+
+    
+    this(requestedFluffyness, requestedStrength, requestedName)
+  }
+  
+  // shave definition...
+}
+```
+
+---
+
+This won't work. Why?
+
+---
+
+Auxillary constructors need to invoke the primary constructor or another auxillary constructor in the first  line.
+
+---
+
+This is so all auxillary constructors eventually invoke the primary constructor, making it the single point of entry to create the class.
+
+---
+
+It's a little vague as to why it's in the first line, but:
+- It's because Java does it
+- It's so we can't access fields that don't exist yet.
+
+---
+
+It's possible to get around this restriction, but clunky.
 
 ---
 
@@ -454,7 +527,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
     request match {
-      case "I want a Llama with strenth 3 and fluffyness 1"
+      case "I want a Llama with strength 3 and fluffyness 1"
 
 
     }
@@ -472,7 +545,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
     request match {
-      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
+      case "I want a Llama with strength 3 and fluffyness 1" => this(1,3,"Parma")
 
 
     }
@@ -491,7 +564,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
   def this(request: String) = {
     request match {
-      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
+      case "I want a Llama with strength 3 and fluffyness 1" => this(1,3,"Parma")
       //...
       case _ => // ???
     }
@@ -503,7 +576,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 
 ---
 
-Let's make a function that does that...
+Instead, let's make a function that does that...
 
 ---
 
@@ -517,6 +590,98 @@ def createLlamaFromRequest(request: String): Llama = {
 
 
 
+
+
+}
+```
+
+---
+
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+
+  
+  
+  
+  
+
+  }
+
+}
+```
+
+---
+
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1"
+   
+   
+   
+   
+
+  }
+
+}
+```
+
+---
+
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    
+    
+    
+
+  }
+
+}
+```
+
+---
+
+Pattern Match:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    
+
+  }
+
+}
+```
+
+---
+
+And so on:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+
+  }
+   
 }
 ```
 
@@ -526,14 +691,54 @@ Add logic from before:
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
 
-   request match {
-     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
-     //...
-     case _ => // ???
-   }
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => // ???
+  }
    
 }
 ```
+
+---
+
+With `Option`:
+```scala
+def createLlamaFromRequest(request: String): Option[Llama] = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => // ???
+  }
+   
+}
+```
+
+---
+
+Return `None`:
+```scala
+def createLlamaFromRequest(request: String): Option[Llama] = {
+
+  request match {
+    case "I want a Llama with strength 3 and fluffyness 1" =>
+      Llama(1, 3, "Parma")
+    case "Give me a Llama with strength 5 and fluffyness 5" =>
+      Llama(5 ,5, "Lava")
+    //...
+    case _ => None
+  }
+   
+}
+```
+
 
 ---
 
