@@ -15,10 +15,6 @@
     <div class="reveal">
       <div class="slides"><section  data-markdown><script type="text/template">
 
-Go to www.menti.com and use the code 16 32 90
-
-> We will review questions at the end. Feedback is just for me.
-</script></section><section  data-markdown><script type="text/template">
 ## What a Wonderful Day for Scala
 
 We're going to learn:
@@ -47,7 +43,12 @@ It should be able to be shaved, reducing it's fluffyness
 </script></section><section  data-markdown><script type="text/template">
 Basic class in Scala:
 ```scala
-class Llama
+class Llama {
+
+
+
+
+}
 ```
 
 <aside class="notes"><p>This is all it takes to make a class in Scala. It doesn&#39;t do much.</p>
@@ -56,22 +57,31 @@ class Llama
 We need to measure fluffyness somehow!</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Creating an instance:
+Creating a value:
+```scala
+val bananaLlama =
+```
+</script></section><section  data-markdown><script type="text/template">
+Creating an instance of the class (an object):
 ```scala
 val bananaLlama = new Llama()
 ```
 </script></section><section  data-markdown><script type="text/template">
-Adding a field in Scala:
+Adding a field to a class:
 ```scala
-class Llama(fluffyness: Int)
+class Llama(fluffyness: Int) {
+
+
+
+
+}
 ```
 
 <aside class="notes"><p>This will do a few things:</p>
 <ul>
 <li>Add this as a required value to the class constructor</li>
 <li>Save this as an immutable, private value within the class.
-This is cool because it&#39;s so much less verbose than java!
-Now, we need to actually change this value somehow. And do it functionally! As everything is immutable, you have to return a whole new Llama!</li>
+This is cool because it&#39;s so much less verbose than java!</li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
 Creating an instance with a field:
@@ -86,15 +96,26 @@ Adding a method in Scala:
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Unit = {
-    fluffyness = fluffyness - woolAmts
+    
   }
 }
 ```
-> `Unit` is analogous to `void` in Java (it means "nothing")
+> `Unit` means "Nothing" 
 
 <aside class="notes"><p>Now, let&#39;s add some logic to that method. Otherwise it doesn&#39;t do anything!
 As the clueless OO programmer you are, you might write something verbose like this:</p>
 </aside></script></section><section  data-markdown><script type="text/template">
+Adding a method in Scala:
+```scala
+class Llama(fluffyness: Int) {
+  
+  def shave(woolAmt: Int): Unit = {
+    fluffyness = fluffyness - woolAmts
+  }
+}
+```
+> `Unit` means "Nothing" 
+</script></section><section  data-markdown><script type="text/template">
 Wait...that didn't work!
 </script></section><section  data-markdown><script type="text/template">
 That's because fluffyness is now immutable!
@@ -103,6 +124,17 @@ Scala does this to ~~make your life hard~~ keep things functional.
  > All variables are immutable in FP
 
 <aside class="notes"><p>Ask me this question at the end if we get time!</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+Now it returns a Llama:
+```scala
+class Llama(fluffyness: Int) {
+  
+  def shave(woolAmt: Int): Llama = {
+
+  }
+}
+```
+<aside class="notes"><p>This is a common pattern. So Scala has some nice syntactic sugar for doing this.</p>
 </aside></script></section><section  data-markdown><script type="text/template">
 Let's do that the long way:
 ```scala
@@ -234,12 +266,6 @@ It gives you stuff you might want for data:
 
 Your compiled code is a little larger due to implementing all this.
 </script></section><section  data-markdown><script type="text/template">
-Why do we have case classes?
-</script></section><section  data-markdown><script type="text/template">
-It makes our data easier to manipulate.
-</script></section><section  data-markdown><script type="text/template">
-Object orientated is a collection of objects: Each one a combination of data and functions.
-</script></section><section  data-markdown><script type="text/template">
 How do we use case classes?
 </script></section><section  data-markdown><script type="text/template">
 Creating a case class:
@@ -265,9 +291,17 @@ Check equality:
 val alabamaLlama = Llama(5, 5, "Benny")
 val copyLlama = alabamaLlama.copy()
 
-println(bananaLlama == copyLlama)
+println(alabamaLlama == copyLlama)
 // prints true
 ```
+</script></section><section  data-markdown><script type="text/template">
+Summary
+</script></section><section  data-markdown><script type="text/template">
+Why do have case classes?
+
+- Good for storing data.
+- Constraining primitive types with tiny types.
+- What else?
 </script></section><section  data-markdown><script type="text/template">
 Moving on...
 </script></section><section  data-markdown><script type="text/template">
@@ -326,7 +360,7 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
     }
   }
   
- // shave definition...
+  // shave definition...
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -381,36 +415,55 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 </script></section><section  data-markdown><script type="text/template">
 Let's make a function that does that...
 </script></section><section  data-markdown><script type="text/template">
-As a function:
+Declare fuction:
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
+
+
+
+  // Notice how we can name this function whatever we want.
+
+
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+Add logic from before:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
      case _ => // ???
    }
+   
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
 With `Option`:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
      case _ => // ???
    }
+   
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
 Return None:
 ```scala
 def createLlamaFromRequest(request: String): Option[Llama] = {
+
    request match {
      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
      //...
-     case _ => None
+     case _ => None // This is the equivalent of null
    }
+   
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -421,10 +474,22 @@ Where does this function go?
 > Singleton Objects
 </script></section><section  data-markdown><script type="text/template">
 ## Whiteboarding Time
+
+> Dalai Llama
 </script></section><section  data-markdown><script type="text/template">
 Declaring an object:
 ```scala
-object LlamaCreator
+object LlamaCreator {
+
+
+
+
+
+
+
+
+
+}
 ```
 </script></section><section  data-markdown><script type="text/template">
 Adding a method to an object:
@@ -439,18 +504,48 @@ object LlamaCreator {
       case _ => None
     }
   }
+  
 }
 ```
+</script></section><section  data-markdown><script type="text/template">
+Let's use that object
+</script></section><section  data-markdown><script type="text/template">
+Declare a value:
+```scala
+val wannaLlama: Option[Llama] =
+
+
+
+//...
+```
+
+> `wannaLlama` may or may not exist
 </script></section><section  data-markdown><script type="text/template">
 Calling an object:
 
 ```scala
-val wannaLlama = LlamaCreator.createLlamaFromRequest(
-  "I want a Llama with strength 3 and fluffyness 1"
-)
+val wannaLlama: Option[Llama] =
+
+  LlamaCreator.createLlamaFromRequest(
+
+  )
 ```
 
-> `wannaLlama may or may not exist`
+> `wannaLlama` may or may not exist
+</script></section><section  data-markdown><script type="text/template">
+Calling an object:
+
+```scala
+val wannaLlama: Option[Llama] = 
+
+  LlamaCreator.createLlamaFromRequest(
+    "I want a Llama with strength 3 and fluffyness 1"
+  )
+```
+
+> `wannaLlama` may or may not exist
+</script></section><section  data-markdown><script type="text/template">
+Problem: `llamaCreator` is rather separate from Llama right now. This can be confusing.
 </script></section><section  data-markdown><script type="text/template">
 ## Companion Objects
 
@@ -464,115 +559,100 @@ val wannaLlama = LlamaCreator.createLlamaFromRequest(
 </li>
 </ul>
 </aside></script></section><section  data-markdown><script type="text/template">
-Declare an object:
+A companion object:
+ - Is in the same file as it's class
+ - Has the same name as it's class
+ - Can access private things in it's class
+</script></section><section  data-markdown><script type="text/template">
+Let's see that in code
+</script></section><section  data-markdown><script type="text/template">
+Next to our class:
 ```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
 
-object Llama 
+
+
+ 
+
+ 
+
+
+ 
+  
+
+// ...
 ```
-
-<aside class="notes"><p>Now we can put it in the same file as our class and they hang out together.</p>
-<ul>
-<li>It has the same name as it&#39;s companion class</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-Add the shave method:
+</script></section><section  data-markdown><script type="text/template">
+Declare object with same name:
 ```scala
-case class Llama(fluffyness: Int, strength: Int, name: String)
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
 
 object Llama {
 
-  def shave(llama: Llama, woolAmt: Int): Llama =
-    Llama.copy(fluffyness = llama.fluffyness - woolAmt)
+  
+   
+    
+     
+      
+   
+  
 
 }
 ```
-
-<aside class="notes"><p>So now we have two nice and separate parts of the file - data and methods. Keeps it functional. But they are together in the same file, so it&#39;s still objects orientated as well.</p>
-<ul>
-<li>Let&#39;s review what we just did on the whiteboard: Show what these things look like in intellij, as well as in diagram form</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-Why do that? Why not just have it in the class?
 </script></section><section  data-markdown><script type="text/template">
-`shave` now takes a llama as well. It is stateless.
-
-It behaves in a static manner instead of like a method in OO.
-
-<aside class="notes"><p>So what is that exactly?</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-It has clearly defined immutable inputs and outputs in it's first line.
-
+Add our method:
 ```scala
-def shave(llama: Llama, woolAmt: Int): Llama = //...
-```
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+  // shave definition
+}
 
-<aside class="notes"><p>So how does that benefit us?</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-In complex programs, this makes things easier to understand. All you need to know is the inputs and outputs.
+object Llama {
 
-> There are no external "global" variables it relies on.
-
-<aside class="notes"><p>Global variables are kind of a good example here. 
-If your function uses a global variables from <em>outside</em> the function then that&#39;s easy to miss.
-Class variables can be a little like those global variables. They&#39;re <em>not</em> constant, even though they are immutable.
-That&#39;s because there are many instances of that class.</p>
-</aside></script></section><section  data-markdown><script type="text/template">
-This makes testing and Test Driven Development easier as well.
-</script></section><section  data-markdown><script type="text/template">
-Let's recap.
-</script></section><section  data-markdown><script type="text/template">
-We implemented copy and equality in Java and Scala
-> Scala saved on boilerplate with case class.
-</script></section><section  data-markdown><script type="text/template">
-We implemented case class and companion objects in Scala
-> This made our code more functional, which brings a variety of benefits.
-  </script></section><section  data-markdown><script type="text/template">
-A few things to remember before we continue.
-</script></section><section  data-markdown><script type="text/template">
-There are benefits to both FP and OO/Imperative styles.
-
-> Scala is flexible in that it allows both OO and FP.
-
-This being good or bad is a matter of opinion.
-
-<aside class="notes"><p>I personally believe it&#39;s good, my ideal program is a functional core, with a thin imperative shell to run it.</p>
-<ul>
-<li>Scala is still more object orientated than Haskell for example.</li>
-<li>This has some benefits in being easier to integrate with other langauge as well<ul>
-<li>Scala runs on the JVM</li>
-<li>Scala runs Java code</li>
-</ul>
-</li>
-<li>It can be argued that it&#39;s more object orientated than Java as well.</li>
-</ul>
-</aside></script></section><section  data-markdown><script type="text/template">
-Objects in scala don't have to be companion objects.
-> Singleton objects don't need no class.
-</script></section><section  data-markdown><script type="text/template">
-## Singleton Objects
-</script></section><section  data-markdown><script type="text/template">
-## Whiteboarding Time
-</script></section><section  data-markdown><script type="text/template">
-Example of a singleton object:
-```scala
-object DalaiLama {
-  
-  val HardCodedValue = 100
-  
-  def foo(bar: Int): Int = {
-    bar - HardCodedValue 
+  def createLlamaFromRequest(request: String): Option[Llama] = {
+    request match {
+      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+      //...
+      case _ => None
+    }
   }
-  
+
 }
 ```
-
-> There can only be one.
 </script></section><section  data-markdown><script type="text/template">
-Differences between singleton objects and companion objects:
- - Companion objects:
-   - Are in the same file as their class
-   - Have the same name as their class
+Calling it works the same:
+```scala
+val wannaLlama: Option[Llama] = 
+
+  Llama.createLlamaFromRequest(
+    "I want a Llama with strength 3 and fluffyness 1"
+  )
+```
+</script></section><section  data-markdown><script type="text/template">
+Summary
+</script></section><section  data-markdown><script type="text/template">
+Why do we have singleton objects?
+
+- They provide a way to store "static" functions
+ + A bag of functions
+- Why not have static classes?
+- What else?
+</script></section><section  data-markdown><script type="text/template">
+Why do we have companion objects?
+
+- Makes more sense to a human
+- Can access private fields and methods
+- Can put constructors
+- What else?
+</script></section><section  data-markdown><script type="text/template">
+Why have a constructor in a companion object?
+
+- Can name it what we want
+- More flexbility in what we return
+- What else?
 </script></section><section  data-markdown><script type="text/template">
 Onto the next step!
 
@@ -661,7 +741,6 @@ trait Hat
 </aside></script></section><section  data-markdown><script type="text/template">
 We now have a hat type!
 ```scala
-val panoramaLlama: Llama = Llama(2, 2, "E")
 val hat: Hat = // ???
 ```
 </script></section><section  data-markdown><script type="text/template">
@@ -694,6 +773,8 @@ case object Nice extends Hat
 Now we can define:
 ```scala
 val parisHat: Hat = Paris
+val toulouseHat: Hat = Toulouse
+val marseilleHat: Hat = Marseille
 val niceHat: Hat = Nice
 ```
 </script></section><section  data-markdown><script type="text/template">
