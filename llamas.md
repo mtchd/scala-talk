@@ -49,14 +49,6 @@ It should be able to be shaved, reducing it's fluffyness
 
 ---
 
-Basic class in Java:
-
-```java
-class Llama {}
-```
-
----
-
 Basic class in Scala:
 ```scala
 class Llama
@@ -68,17 +60,9 @@ We need to measure fluffyness somehow!
 
 ---
 
-Adding a field in Java:
-```java
-class Llama {
-
-  private int fluffyness;
-  
-  public Llama(int fluffyness) {
-    this.fluffyness = fluffyness;
-  }
-  
-}
+Creating an instance:
+```scala
+val bananaLlama = new Llama()
 ```
 
 ---
@@ -97,36 +81,25 @@ Now, we need to actually change this value somehow. And do it functionally! As e
 
 ---
 
-Adding a method in Java:
-```java
-class Llama {
-
-  private int fluffyness;
-  
-  public Llama(int fluffyness) {
-    this.fluffyness = fluffyness;
-  }
-  
-  public void shave(int woolAmt) {
-    fluffyness = fluffyness - woolAmt;
-  }
-  
-}
+Creating an instance with a field:
+```scala
+val pajamaLlama = new Llama(1)
+println(pajamaLlama.fluffyness)
+// Prints "1"
 ```
 
 ---
 
 Adding a method in Scala:
 ```scala
-class Llama(fluffyness: Int) = {
+class Llama(fluffyness: Int) {
   
-  def shave(woolAmt: Int): Unit {
+  def shave(woolAmt: Int): Unit = {
     fluffyness = fluffyness - woolAmts
   }
-  
 }
 ```
-> `Unit` is analogous to `void` in Java
+> `Unit` is analogous to `void` in Java (it means "nothing")
 
 Note: 
 Now, let's add some logic to that method. Otherwise it doesn't do anything!
@@ -151,27 +124,31 @@ Note: Ask me this question at the end if we get time!
 
 Let's do that the long way:
 ```scala
-
 class Llama(fluffyness: Int) {
   
   def shave(woolAmt: Int): Llama = {
-    
-    val newFluffiness = fluffyness - woolAmt
-  
-    val newLlama = new Llama(newFluffiness)
-    
-    return newLlama
+    return new Llama(fluffyness - woolAmt)
   }
-  
 }
 ```
 Note: This is a common pattern. So Scala has some nice syntactic sugar for doing this.
 
 ---
 
-Let's do this the short way:
+We don't need `return`
 ```scala
+class Llama(fluffyness: Int) {
 
+  def shave(woolAmt: Int): Llama = {
+    new Llama(fluffyness - woolAmt)
+  }
+}
+```
+
+---
+
+We don't need `{}`
+```scala
 class Llama(fluffyness: Int) {
 
   def shave(woolAmt: Int): Llama =
@@ -186,9 +163,19 @@ Okay let's go print this out and check everything works.
 
 ---
 
+Using a method:
+```scala
+val dramaLlama = new Llama(5)
+val shavedLlama = dramaLlama.shave(3)
+println(shavedLlama)
+// Prints 2
+```
+
+---
+
 Let's recap so far:
- - We made a class with a field and method in both langauges
- - Scala had less boilerplate
+ - We made a class with a field and method
+ - We've seen some basic syntax
  - Scala kept things functional
  
 ---
@@ -224,30 +211,7 @@ Check for equality:
 
 ---
 
-Update our constructor and values in Java:
-```java
-class Llama {
-
-  private int fluffyness;
-  private int strength;
-  private String name;
-  
-  public Llama(int fluffyness, int strength, String name) {
-    this.fluffyness = fluffyness;
-    this.strength = strength;
-    this.name = name;
-  }
-
-  public void shave(int woolAmt) {
-    fluffyness = fluffyness - woolAmt;
-  }
-  
-}
-```
-
----
-
-Update constructor and values in Scala:
+Update constructor and values:
 ```scala
 class Llama(fluffyness: Int, strength: Int, name: String) {
 
@@ -259,105 +223,27 @@ class Llama(fluffyness: Int, strength: Int, name: String) {
 
 ---
 
-> Define copying and equality in Java
+Define copying and equality:
 
-Extend the `clonable` interface:
-
-```java
-class Llama extends Clonable {
-
-  final private int fluffyness;
-  final private int strength;
-  final private String name;
+```scala
+class Llama(fluffyness: Int, strength: Int, name: String) extends Cloneable {
   
-  public Llama(int fluffyness, int strength, String name) {
-    this.fluffyness = fluffyness;
-    this.strength = strength;
-    this.name = name;
+  def shave(woolAmt: Int): Llama =
+    new Llama(fluffyness - woolAmt)
+
+  def equals(other: Llama): Bool = {
+    // Define what two llamas being equal means.
   }
   
+  def clone(other: Llama): Llama = {
+    // Define how to copy a llama.
+  }
 }
 ```
 
 ---
 
-> Define copying and equality in Java
-
-Implement `clone()` method:
-
-```java
-class Llama extends Clonable {
-
-  @Override
-  public clone() throws CloneNotSupportedException {
-    return super.clone();
-  } 
-  
-  final private int fluffyness;
-  final private int strength;
-  final private String name;
-  
-  public Llama(int fluffyness, int strength, String name) {
-    this.fluffyness = fluffyness;
-    this.strength = strength;
-    this.name = name;
-  }
-  
-}
-```
-
----
-
-> Define copying and equality in Java
-
-Then we would have to define `equals()` as well..
-
-```java
-class Llama extends Clonable {
-
-  @Override
-  public Llama clone() throws CloneNotSupportedException {
-    return super.clone();
-  }
-  
-  @Override
-  public boolean equals(Object o) {
-  
-    // If the object is compared with itself then return true   
-    if (o == this) { 
-        return true; 
-    } 
-
-    /* Check if o is an instance of Llama or not 
-      "null instanceof [type]" also returns false */
-    if (!(o instanceof Llama)) { 
-        return false; 
-    } 
-  
-    // Typecast to llama
-    Llama compareLlama = (Llama) o;
-    
-    return fluffyness == o.fluffyness && strength == o.strength && name == o.name);
-    
-  }
-  
-  final private int fluffyness;
-  final private int strength;
-  final private String name;
-  
-  public Llama(int fluffyness, int strength, String name) {
-    this.fluffyness = fluffyness;
-    this.strength = strength;
-    this.name = name;
-  }
-}
-```
-
-Note: What a load of...work!
-
----
-
-Define copying and equality in Scala:
+Define copying and equality:
 ```scala
 case class Llama(fluffyness: Int, strength: Int, name: String) {
 
@@ -370,10 +256,6 @@ case class Llama(fluffyness: Int, strength: Int, name: String) {
 ---
 
 Cool. What is a case class?
-
----
-
-First, ignore the implications the title "case class"  gives you.
 
 ---
 
@@ -402,11 +284,11 @@ Your compiled code is a little larger due to implementing all this.
 
 ---
 
-We generally don't store methods in here, in an attempt to keep thing more functional.
+Why do we have case classes?
 
 ---
 
-So why are we doing all of this?
+It makes our data easier to manipulate.
 
 ---
 
@@ -414,13 +296,267 @@ Object orientated is a collection of objects: Each one a combination of data and
 
 ---
 
-Functional programs are just a collection of functions which take data, manipulate it, and return it. Data is to be stored separately.
-
-> This goes to the heart of functional programming
+How do we use case classes?
 
 ---
 
-This brings up a problem. What about the shave method? 
+Creating a case class:
+```scala
+val alabamaLlama = Llama(5, 5, "Benny")
+
+
+
+// `new` keyword not needed.
+```
+
+---
+
+Create a copy:
+```scala
+val alabamaLlama = Llama(5, 5, "Benny")
+val copyLlama = alabamaLlama.copy()
+
+
+// ...
+```
+
+---
+
+Check equality:
+```scala
+val alabamaLlama = Llama(5, 5, "Benny")
+val copyLlama = alabamaLlama.copy()
+
+println(bananaLlama == copyLlama)
+// prints true
+```
+
+---
+
+Moving on...
+
+---
+
+## Llama Requests
+
+---
+
+You've been asked to...
+
+---
+
+Create a new Llama object from a string
+
+---
+
+Such as: "I want a Llama with strength 3 and fluffyness 1"
+
+---
+
+Let's build a constructor that makes a Llama from a string:
+
+---
+
+In our case class:
+
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+ 
+
+
+
+
+
+  
+  
+  // shave definition...
+}
+```
+
+---
+
+Constructors in Scala:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+
+
+
+
+
+  }
+  
+  // shave definition...
+}
+```
+
+---
+
+Pattern Matching:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+    request match {
+
+
+
+    }
+  }
+  
+ // shave definition...
+}
+```
+
+---
+
+Create a case to match:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+    request match {
+      case "I want a Llama with strenth 3 and fluffyness 1"
+
+
+    }
+  }
+  
+  // shave definition...
+}
+```
+
+---
+
+What to return on a match:
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+    request match {
+      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
+
+
+    }
+  }
+  
+  // shave definition... 
+}
+
+```
+
+---
+
+What to return when no match?
+```scala
+case class Llama(fluffyness: Int, strength: Int, name: String) {
+
+  def this(request: String) = {
+    request match {
+      case "I want a Llama with strenth 3 and fluffyness 1" => this(1,3,"Parma")
+      //...
+      case _ => // ???
+    }
+  }
+  
+  // shave definition...
+}
+```
+
+---
+
+Let's make a function that does that...
+
+---
+
+As a function:
+```scala
+def createLlamaFromRequest(request: String): Llama = {
+   request match {
+     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+     //...
+     case _ => // ???
+   }
+}
+```
+
+---
+
+With `Option`:
+```scala
+def createLlamaFromRequest(request: String): Option[Llama] = {
+   request match {
+     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+     //...
+     case _ => // ???
+   }
+}
+```
+
+---
+
+Return None:
+```scala
+def createLlamaFromRequest(request: String): Option[Llama] = {
+   request match {
+     case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+     //...
+     case _ => None
+   }
+}
+```
+
+---
+
+Where does this function go?
+
+---
+
+## Objects
+
+> Singleton Objects
+
+---
+
+## Whiteboarding Time
+
+---
+
+Declaring an object:
+```scala
+object LlamaCreator
+```
+
+---
+
+Adding a method to an object:
+
+```scala
+object LlamaCreator {
+
+  def createLlamaFromRequest(request: String): Option[Llama] = {
+    request match {
+      case "I want a Llama with strength 3 and fluffyness 1" => Llama(1,3,"Parma")
+      //...
+      case _ => None
+    }
+  }
+}
+```
+
+---
+
+Calling an object:
+
+```scala
+val wannaLlama = LlamaCreator.createLlamaFromRequest(
+  "I want a Llama with strength 3 and fluffyness 1"
+)
+```
+
+> `wannaLlama may or may not exist`
 
 ---
 
@@ -650,7 +786,7 @@ How do we get a compile time error?
 
 ---
 
-Some problems with Enumerators:
+Some problems with Enumeration:
 
 1. Enumerations have the same type after erasure.
 2. There’s no exhaustive matching check during compile.
@@ -670,9 +806,22 @@ Note: Like interfaces from Java.
 Create a trait:
 ```scala
 trait Hat
+
+
+
+
+// ...
 ```
 
 Note: Cool! We made a trait. Now lets do something with it.
+
+---
+
+We now have a hat type!
+```scala
+val panoramaLlama: Llama = Llama(2, 2, "E")
+val hat: Hat = // ???
+```
 
 ---
 
@@ -681,9 +830,37 @@ Extend the trait:
 trait Hat
 
 case object Paris extends Hat
+
+
+// ...
+```
+
+---
+
+Now we can define:
+```scala
+val hat: Hat = Paris
+```
+
+---
+
+
+Extend the trait further:
+```scala
+trait Hat
+
+case object Paris extends Hat
 case object Toulouse extends Hat
 case object Marseille extends Hat
 case object Nice extends Hat
+```
+
+---
+
+Now we can define:
+```scala
+val parisHat: Hat = Paris
+val niceHat: Hat = Nice
 ```
 
 ---
