@@ -279,7 +279,9 @@ This is so we know the llamas haven't lost fluffyness or strength over their lon
 
 Update our fields:
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String) {
+class Llama(val fluffyness: Int,
+            val strength: Int,
+            val name: String) {
 
   def shave(woolAmt: Int): Llama =
     new Llama(fluffyness - woolAmt)
@@ -287,14 +289,14 @@ class Llama(fluffyness: Int, strength: Int, name: String) {
 }
 ```
 
-> `val` has been dropped for now, we'll see why later.
-
 ---
 
 Define copying and equality the long way:
 
 ```scala
-class Llama(fluffyness: Int, strength: Int, name: String) extends Cloneable {
+class Llama(val fluffyness: Int,
+            val strength: Int,
+            val name: String) extends Cloneable {
   
   def shave(woolAmt: Int): Llama =
     new Llama(fluffyness - woolAmt)
@@ -345,12 +347,6 @@ It gives you stuff you might want for data:
   + Algebraic Data Types
   + Automatically defined getters and setters
   
----
-
-> Drawback of Case Class
-
-Your compiled code is a little larger due to implementing all this. The program will also take longer to compile.
-
 ---
 
 How do we use case classes?
@@ -434,114 +430,7 @@ Such as: "I want a Llama with strength 3 and fluffyness 1"
 
 ---
 
-Let's build a constructor that makes a Llama from a string
-
----
-
-You may think to use an auxillary constructor:
-```scala
-val fatherLlama =
-  Llama("I want a Llama with strength 3 and fluffyness 1")
-```
-
----
-
-In our case class:
-
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
- 
-
-
-
-
-
-  
-  
-  // shave definition...
-}
-```
-
----
-
-Define an auxillary constructor:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-
-   
-
-
-
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-Add logic:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-     
-    // Logic to turn string into fluffyness, strength and name
-
-
-
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-Invoke the primary constructor:
-```scala
-case class Llama(fluffyness: Int, strength: Int, name: String) {
-
-  def this(request: String) = {
-     
-    // Logic to turn string into fluffyness, strength and name
-
-    
-    this(requestedFluffyness, requestedStrength, randomName)
-  }
-  
-  // shave definition...
-}
-```
-
----
-
-This won't work. Why?
-
----
-
-Auxillary constructors need to invoke the primary constructor or another auxillary constructor in the first  line.
-
----
-
-This is so all auxillary constructors eventually invoke the primary constructor, making it the single point of entry to create the class.
-
----
-
-It's a little vague as to why it's in the first line, but:
-- It's because Java does it
-- It's so we can't access fields that don't exist yet.
-
----
-
-It's possible to get around this restriction, but clunky.
-
----
-
-Instead, let's make a function as our constructor
+Let's build a function that makes a Llama from a string (a constructor!)
 
 ---
 
@@ -668,6 +557,10 @@ def createLlamaFromRequest(request: String): Llama = {
    
 }
 ```
+
+---
+
+## Options
 
 ---
 
@@ -838,7 +731,7 @@ Note: Like singleton objects, but attached to a class of some kind.
 
 ---
 
-A companion object:
+A companion object is a singleton object and:
  - Is in the same file as it's class
  - Has the same name as it's class
  - Can access private things in it's class
@@ -1312,9 +1205,10 @@ Note: Llamas now carry fruit in their hats, for the llamas to eat.
 
 ---
 
+Define case classes:
 ```scala
 sealed trait Hat {
-  // trick defined here
+  // trick no longer defined here
 }
 
 case class Paris(numOfApples: Int) extends Hat
@@ -1325,22 +1219,125 @@ case object Nice extends Hat
 
 ---
 
+Define new function for eating hats:
 ```scala
 sealed trait Hat {
 
   def eatHat: Hat = this match {
-    case Paris(numOfApples) => Paris(numOfApples - 1)
-    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
-    case marseille @ Marseille(_) => marseille
-    case Nice => Paris(5)
-  }
+   
+    
+    
+    
 
+  }
 }
+// case classes and objects defined here
 ```
 
 ---
 
-We're switching back to object orientated, that was too hard.
+Define a case to match on:
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(2) => Paris(1)
+    
+    
+    
+
+  }
+}
+// case classes and objects defined here
+```
+
+---
+
+Case with a variable:
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(2) => Paris(1)
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    
+    
+
+  }
+}
+// case classes and objects defined here
+```
+
+---
+
+Case with 2 variables:
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(2) => Paris(1)
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
+    
+
+  }
+}
+// case classes and objects defined here
+```
+
+---
+
+Case with an object:
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(2) => Paris(1)
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
+    case Nice => Paris(5)
+
+  }
+}
+// case classes and objects defined here
+```
+
+---
+
+Case where nothing changes:
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(2) => Paris(1)
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
+    case Nice => Paris(5)
+    case marseille @ Marseille(_) => marseille
+  }
+}
+// case classes and objects defined here
+```
+
+---
+
+## Final Summary
+
+---
+
+Use case classes to wrap data in a sensible manner.
+
+---
+
+Use companion objects to hold constructors and "static" functions. 
+
+---
+
+Use sealed traits to create types with multiple possible permutations.
+
+---
+
+Always implement llama programs with functional programming.
 
 ---
 
