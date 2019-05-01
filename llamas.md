@@ -11,6 +11,7 @@ We're going to learn:
 - Classes in Scala
 - Case Classes
 - Companion/Singleton Objects
+- Traits
 
 ---
 
