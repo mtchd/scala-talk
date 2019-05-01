@@ -529,7 +529,7 @@ def createLlamaFromRequest(request: String): Llama = {
 }
 ```
 </script></section><section  data-markdown><script type="text/template">
-Add logic from before:
+What happens if there is no match?
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
 
@@ -674,7 +674,7 @@ val wannaLlama: Option[Llama] =
 
 > `wannaLlama` may or may not exist
 </script></section><section  data-markdown><script type="text/template">
-Problem: `llamaCreator` is rather separate from Llama right now. This can be confusing.
+Problem: `LlamaCreator` is rather separate from Llama right now. This can be confusing.
 </script></section><section  data-markdown><script type="text/template">
 ## Companion Objects
 
@@ -782,10 +782,315 @@ Why have a constructor in a companion object?
 - More flexbility in what we return
 - What else?
 </script></section><section  data-markdown><script type="text/template">
-Okay, that was too hard, we're going back to object orientated!
+Now we're going to get a bit spicier.
+</script></section><section  data-markdown><script type="text/template">
+## Monetising the Llamas further
+We have taken on a contract from a french fashion company to advertise hats.
+</script></section><section  data-markdown><script type="text/template">
+All llamas now have four types of Hats:
+- Paris Hat
+- Toulouse Hat
+- Marseille Hat
+- Nice Hat
+</script></section><section  data-markdown><script type="text/template">
+Each hat requires a trick when a traveller sees them:
+- Paris Hat => Sit
+- Toulouse Hat => Shake
+- Marseille Hat => Talk
+- Nice Hat => Triple backflip
+</script></section><section  data-markdown><script type="text/template">
+What your end result should like:
+```
+> println(hat.trick)
+"Talk"
+```
+</script></section><section  data-markdown><script type="text/template">
+Let's think about this...
+
+<aside class="notes"><p>Let&#39;s use ADT</p>
+<ul>
+<li>Let&#39;s think about this...</li>
+<li>The function needs to map each hat to a trick</li>
+<li>A hat can come in four different flavours, but each llama <em>always</em> has a hat.</li>
+<li>All llamas need to do tricks with their hat</li>
+</ul>
+</aside></script></section><section  data-markdown><script type="text/template">
+All llamas *must* have hats, but a hat can come in four different flavours.
+</script></section><section  data-markdown><script type="text/template">
+There are a few different ways of doing this.
+</script></section><section  data-markdown><script type="text/template">
+Each Llama could store a string that describes the hat:
+```scala
+case class Llama (
+  fluffyness: Int,
+  strength: Int,
+  name: String,
+  hat: String
+)
+```
+</script></section><section  data-markdown><script type="text/template">
+Why is that bad?
+</script></section><section  data-markdown><script type="text/template">
+We could recieve any input, then...
+
+> We would have a runtime error instead of a compile time error.
+</script></section><section  data-markdown><script type="text/template">
+How do we get a compile time error? 
+> Enumeration?
+</script></section><section  data-markdown><script type="text/template">
+Some problems with Enumeration:
+
+1. Enumerations have the same type after erasure.
+2. There’s no exhaustive matching check during compile.
+3. They don’t inter-operate with Java’s enum.
+</script></section><section  data-markdown><script type="text/template">
+## Traits
+
+<aside class="notes"><p>Like interfaces from Java.</p>
+<ul>
+<li>They are <code>extendable</code></li>
+<li>They came with their own methods/fields and abstract methods if you want</li>
+<li>But they are done a little more functionally</li>
+</ul>
+</aside></script></section><section  data-markdown><script type="text/template">
+Create a trait:
+```scala
+trait Hat
+
+
+
+
+// ...
+```
+
+<aside class="notes"><p>Cool! We made a trait. Now lets do something with it.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+We now have a hat type!
+```scala
+val hat: Hat = // ???
+```
+</script></section><section  data-markdown><script type="text/template">
+Extend the trait:
+```scala
+trait Hat
+
+case object Paris extends Hat
+
+
+// ...
+```
+</script></section><section  data-markdown><script type="text/template">
+Now we can define:
+```scala
+val hat: Hat = Paris
+```
+</script></section><section  data-markdown><script type="text/template">
+Extend the trait further:
+```scala
+trait Hat
+
+case object Paris extends Hat
+case object Toulouse extends Hat
+case object Marseille extends Hat
+case object Nice extends Hat
+```
+</script></section><section  data-markdown><script type="text/template">
+Now we can define:
+```scala
+val parisHat: Hat = Paris
+val toulouseHat: Hat = Toulouse
+val marseilleHat: Hat = Marseille
+val niceHat: Hat = Nice
+```
+</script></section><section  data-markdown><script type="text/template">
+What is a case object?
+</script></section><section  data-markdown><script type="text/template">
+All the same things case does to class, we do to object.
+</script></section><section  data-markdown><script type="text/template">
+But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
+</script></section><section  data-markdown><script type="text/template">
+We want to pattern match.
+</script></section><section  data-markdown><script type="text/template">
+Let's go back to our `Hat` trait:
+
+<aside class="notes"><p>We have now added hat as a value to llama.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+In the `Hat` trait:
+```scala
+trait Hat {
+
+ 
+ 
+  
+   
+    
+     
+    
+  
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+We can define a function:
+```scala
+trait Hat {
+
+  def trick: String = {
+    
+      
+      
+      
+      
+    
+  }
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Pattern match:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      
+    
+     
+     
+    }
+  }
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Create a case:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      case Paris => "Sit"
+    
+     
+     
+    }
+  }
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Fill it in:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+  }
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Shorter:
+```scala
+trait Hat {
+
+  def trick: String = this match {
+    case Paris => "Sit"
+    case Toulouse => "Shake"
+    case Marseille => "Talk"
+    case Nice => "Triple backflip"
+  }
+
+    
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Now we can:
+```scala
+val parisHat: Hat = Paris
+println(parisHat.trick)
+// Prints "Sit"
+```
+</script></section><section  data-markdown><script type="text/template">
+Beware their are devious illegal hats out there!
+</script></section><section  data-markdown><script type="text/template">
+In Illegal.scala
+```scala
+case object IllegalHat extends Hat
+```
+</script></section><section  data-markdown><script type="text/template">
+Now what happens?
+```scala
+val illegalHat: Hat = IllegalHat
+println(illegalHat.trick)
+// Oh no!
+```
+</script></section><section  data-markdown><script type="text/template">
+Use sealed!
+</script></section><section  data-markdown><script type="text/template">
+Seal our trait:
+```scala
+sealed trait Hat {
+
+  def trick: String = this match {
+    case Paris => "Sit"
+    case Toulouse => "Shake"
+    case Marseille => "Talk"
+    case Nice => "Triple backflip"
+  }
+
+    
+}
+// case objects down here
+```
+</script></section><section  data-markdown><script type="text/template">
+Now it can't be extended outside of this file!
+</script></section><section  data-markdown><script type="text/template">
+We now have *exhaustive* pattern matching that will fail to compile if a case is removed!
+
+<aside class="notes"><p>This means that no one can extend our trait outside of that file. It means the program is now confident that it has handled all possible cases of a hat in that pattern match.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+Turns out advertising hats in Andes mountain trails wasn't a great idea.
+
+<aside class="notes"><p>Our french company has pulled it&#39;s sponsorship. What do we do with all these hats!</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+We're pivoting to fruit hats.
+
+<aside class="notes"><p>Llamas now carry fruit in their hats, for the llamas to eat.</p>
+</aside></script></section><section  data-markdown><script type="text/template">
+```scala
+sealed trait Hat {
+  // trick defined here
+}
+
+case class Paris(numOfApples: Int) extends Hat
+case class Toulouse(numOfApples: Int, numOfOranges: Int) extends Hat
+case class Marseille(numofPizzas: Int) extends Hat
+case object Nice extends Hat
+```
+</script></section><section  data-markdown><script type="text/template">
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
+    case marseille @ Marseille(_) => marseille
+    case Nice => Paris(5)
+  }
+
+}
+```
+</script></section><section  data-markdown><script type="text/template">
+We're switching back to object orientated, that was too hard.
 </script></section><section  data-markdown><script type="text/template">
 Questions!
-
 </script></section></div>
     </div>
 

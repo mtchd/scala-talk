@@ -653,7 +653,7 @@ def createLlamaFromRequest(request: String): Llama = {
 
 ---
 
-Add logic from before:
+What happens if there is no match?
 ```scala
 def createLlamaFromRequest(request: String): Llama = {
 
@@ -824,7 +824,7 @@ val wannaLlama: Option[Llama] =
 
 ---
 
-Problem: `llamaCreator` is rather separate from Llama right now. This can be confusing.
+Problem: `LlamaCreator` is rather separate from Llama right now. This can be confusing.
 
 ---
 
@@ -952,9 +952,396 @@ Why have a constructor in a companion object?
 
 ---
 
-Okay, that was too hard, we're going back to object orientated!
+Now we're going to get a bit spicier.
+
+---
+
+## Monetising the Llamas further
+We have taken on a contract from a french fashion company to advertise hats.
+
+---
+
+All llamas now have four types of Hats:
+- Paris Hat
+- Toulouse Hat
+- Marseille Hat
+- Nice Hat
+
+---
+
+Each hat requires a trick when a traveller sees them:
+- Paris Hat => Sit
+- Toulouse Hat => Shake
+- Marseille Hat => Talk
+- Nice Hat => Triple backflip
+
+---
+
+What your end result should like:
+```
+> println(hat.trick)
+"Talk"
+```
+
+---
+
+Let's think about this...
+
+Note: Let's use ADT
+- Let's think about this...
+- The function needs to map each hat to a trick
+- A hat can come in four different flavours, but each llama *always* has a hat.
+- All llamas need to do tricks with their hat
+
+---
+
+All llamas *must* have hats, but a hat can come in four different flavours.
+
+---
+
+There are a few different ways of doing this.
+
+---
+
+Each Llama could store a string that describes the hat:
+```scala
+case class Llama (
+  fluffyness: Int,
+  strength: Int,
+  name: String,
+  hat: String
+)
+```
+
+---
+
+Why is that bad?
+
+---
+
+We could recieve any input, then...
+
+> We would have a runtime error instead of a compile time error.
+
+---
+
+How do we get a compile time error? 
+> Enumeration?
+
+---
+
+Some problems with Enumeration:
+
+1. Enumerations have the same type after erasure.
+2. There’s no exhaustive matching check during compile.
+3. They don’t inter-operate with Java’s enum.
+
+---
+
+## Traits
+
+Note: Like interfaces from Java.
+- They are `extendable`
+- They came with their own methods/fields and abstract methods if you want
+- But they are done a little more functionally
+
+---
+
+Create a trait:
+```scala
+trait Hat
+
+
+
+
+// ...
+```
+
+Note: Cool! We made a trait. Now lets do something with it.
+
+---
+
+We now have a hat type!
+```scala
+val hat: Hat = // ???
+```
+
+---
+
+Extend the trait:
+```scala
+trait Hat
+
+case object Paris extends Hat
+
+
+// ...
+```
+
+---
+
+Now we can define:
+```scala
+val hat: Hat = Paris
+```
+
+---
+
+Extend the trait further:
+```scala
+trait Hat
+
+case object Paris extends Hat
+case object Toulouse extends Hat
+case object Marseille extends Hat
+case object Nice extends Hat
+```
+
+---
+
+Now we can define:
+```scala
+val parisHat: Hat = Paris
+val toulouseHat: Hat = Toulouse
+val marseilleHat: Hat = Marseille
+val niceHat: Hat = Nice
+```
+
+---
+
+What is a case object?
+
+---
+
+All the same things case does to class, we do to object.
+
+---
+
+But it's a little less. We don't need stuff like copy or equality, as there is only ever one.
+
+---
+
+We want to pattern match.
+
+---
+
+Let's go back to our `Hat` trait:
+
+Note: We have now added hat as a value to llama.
+
+---
+
+In the `Hat` trait:
+```scala
+trait Hat {
+
+ 
+ 
+  
+   
+    
+     
+    
+  
+}
+// case objects down here
+```
+
+---
+
+We can define a function:
+```scala
+trait Hat {
+
+  def trick: String = {
+    
+      
+      
+      
+      
+    
+  }
+}
+// case objects down here
+```
+
+---
+
+Pattern match:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      
+    
+     
+     
+    }
+  }
+}
+// case objects down here
+```
+
+---
+
+Create a case:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      case Paris => "Sit"
+    
+     
+     
+    }
+  }
+}
+// case objects down here
+```
+
+---
+
+Fill it in:
+```scala
+trait Hat {
+
+  def trick: String = {
+    this match {
+      case Paris => "Sit"
+      case Toulouse => "Shake"
+      case Marseille => "Talk"
+      case Nice => "Triple backflip"
+    }
+  }
+}
+// case objects down here
+```
+
+---
+
+Shorter:
+```scala
+trait Hat {
+
+  def trick: String = this match {
+    case Paris => "Sit"
+    case Toulouse => "Shake"
+    case Marseille => "Talk"
+    case Nice => "Triple backflip"
+  }
+
+    
+}
+// case objects down here
+```
+
+---
+
+Now we can:
+```scala
+val parisHat: Hat = Paris
+println(parisHat.trick)
+// Prints "Sit"
+```
+
+---
+
+Beware their are devious illegal hats out there!
+
+---
+
+In Illegal.scala
+```scala
+case object IllegalHat extends Hat
+```
+
+---
+
+Now what happens?
+```scala
+val illegalHat: Hat = IllegalHat
+println(illegalHat.trick)
+// Oh no!
+```
+
+---
+
+Use sealed!
+
+---
+
+Seal our trait:
+```scala
+sealed trait Hat {
+
+  def trick: String = this match {
+    case Paris => "Sit"
+    case Toulouse => "Shake"
+    case Marseille => "Talk"
+    case Nice => "Triple backflip"
+  }
+
+    
+}
+// case objects down here
+```
+
+---
+
+Now it can't be extended outside of this file!
+
+---
+
+We now have *exhaustive* pattern matching that will fail to compile if a case is removed!
+
+Note: This means that no one can extend our trait outside of that file. It means the program is now confident that it has handled all possible cases of a hat in that pattern match.
+
+---
+
+Turns out advertising hats in Andes mountain trails wasn't a great idea.
+
+Note: Our french company has pulled it's sponsorship. What do we do with all these hats!
+
+---
+
+We're pivoting to fruit hats.
+
+Note: Llamas now carry fruit in their hats, for the llamas to eat.
+
+---
+
+```scala
+sealed trait Hat {
+  // trick defined here
+}
+
+case class Paris(numOfApples: Int) extends Hat
+case class Toulouse(numOfApples: Int, numOfOranges: Int) extends Hat
+case class Marseille(numofPizzas: Int) extends Hat
+case object Nice extends Hat
+```
+
+---
+
+```scala
+sealed trait Hat {
+
+  def eatHat: Hat = this match {
+    case Paris(numOfApples) => Paris(numOfApples - 1)
+    case Toulouse(numOfApples, numOfOranges) => Toulouse(numOfApples - 1, numOfOranges - 1)
+    case marseille @ Marseille(_) => marseille
+    case Nice => Paris(5)
+  }
+
+}
+```
+
+---
+
+We're switching back to object orientated, that was too hard.
 
 ---
 
 Questions!
-
