@@ -1,5 +1,5 @@
 # scala-talk
-Scala llama talk.
+Scala llama talk - See it here: https://mtchd.github.io/scala-talk/#/
 
 Assumed knowledge:
  - Basics of Java
